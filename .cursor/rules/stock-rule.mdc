@@ -1,0 +1,84 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+// Rule for Smart Inventory Dashboard
+rule smart_inventory_dashboard {
+  // Define roles and permissions for users
+  roles: [
+    {name: "Admin", permissions: ["manage_users", "view_all_reports", "edit_product", "delete_product", "add_product"]},
+    {name: "Manager", permissions: ["view_inventory", "generate_reports", "view_sales_data", "view_stock_levels"]},
+    {name: "Employee", permissions: ["update_stock_levels", "add_stock", "remove_stock"]},
+  ]
+
+  // User authentication and role-based access control
+  authentication: {
+    method: "Laravel Authentication",
+    session_management: true,
+    secure_login: true,
+  }
+
+  // Define core functionalities for inventory management
+  functionality: {
+    inventory_tracking: true,  // Real-time tracking of stock levels
+    reporting: true,  // Generate detailed reports on stock and sales
+    data_visualization: true,  // Graphs, charts, tables for performance analysis
+    barcode_scanning: optional,  // Optional feature for product updates via barcode scanning
+  }
+
+  // Product management features
+  product_management: {
+    CRUD_operations: true,  // Create, Read, Update, Delete for product data
+    stock_update: true,  // Update stock based on purchases, sales, and returns
+    product_details: true,  // Manage price, quantity, and product descriptions
+  }
+
+  // Technology stack integration
+  frontend: {
+    technology: "React",
+    UI_framework: "Tailwind CSS",
+    mobile_responsive: true,  // Ensure UI is mobile-friendly
+  }
+
+  backend: {
+    technology: "Laravel",
+    database: "MySQL",
+    hosting: "Vercel for frontend, AWS for backend",
+    real_time_updates: true,  // WebSockets or broadcasting for real-time updates
+  }
+
+  // Security and scalability considerations
+  security: {
+    encryption: "SSL",
+    role_based_access_control: true,  // Ensure access restrictions based on user roles
+  }
+
+  scalability: {
+    optimized_queries: true,  // Use caching and indexing for efficient database queries
+  }
+
+  // Testing & Quality Assurance
+  testing: {
+    unit_testing: true,  // Test critical backend functionality
+    integration_testing: true,  // Ensure frontend-backend communication works
+    UI_UX_testing: true,  // Ensure app is responsive and intuitive
+    UAT_testing: true,  // Run sessions with potential end users for feedback
+  }
+
+  // Timeline for development phases
+  timeline: [
+    {phase: "Phase 1: Setup & Initial Backend Development", duration: "2 weeks"},
+    {phase: "Phase 2: Frontend Development", duration: "3 weeks"},
+    {phase: "Phase 3: Reporting & Analytics Implementation", duration: "2 weeks"},
+    {phase: "Phase 4: Testing & Bug Fixing", duration: "2 weeks"},
+    {phase: "Phase 5: Deployment & Launch", duration: "1 week"},
+  ]
+
+  // Post-launch support and maintenance
+  post_launch: {
+    updates: "Regular updates to add new features or fix bugs",
+    performance_monitoring: true,  // Track and respond to user-reported issues
+  }
+}
+
