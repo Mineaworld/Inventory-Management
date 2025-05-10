@@ -314,21 +314,27 @@ export default function Products({ suppliers = [] }) {
                             </CardContent>
                         </Card>
                         <Modal show={showModal} onClose={closeModal} maxWidth="md">
-                            <div className="p-6">
-                                <h3 className="text-lg font-semibold mb-4">{editing ? 'Edit Product' : 'Add Product'}</h3>
+                            <div className="p-6 bg-white dark:bg-zinc-900 rounded">
+                                <h3 className="text-lg font-semibold mb-4 text-foreground dark:text-gray-100">{editing ? 'Edit Product' : 'Add Product'}</h3>
                                 <form onSubmit={handleModalSubmit} className="space-y-4">
-                                    <TextInput name="name" value={form.name} onChange={handleChange} placeholder="Name" required className="w-full" />
-                                    <TextInput name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full" />
-                                    <TextInput name="price" value={form.price} onChange={handleChange} placeholder="Price" type="number" min="0" step="0.01" required className="w-full" />
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Name</label>
+                                    <TextInput name="name" value={form.name} onChange={handleChange} placeholder="Name" required className="w-full dark:bg-zinc-800 dark:text-gray-100" />
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Description</label>
+                                    <TextInput name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full dark:bg-zinc-800 dark:text-gray-100" />
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Price</label>
+                                    <TextInput name="price" value={form.price} onChange={handleChange} placeholder="Price" type="number" min="0" step="0.01" required className="w-full dark:bg-zinc-800 dark:text-gray-100" />
                                     {!editing && (
-                                        <TextInput name="quantity" value={form.quantity} onChange={handleChange} placeholder="Initial Quantity" type="number" min="0" required className="w-full" />
+                                        <>
+                                            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Initial Quantity</label>
+                                            <TextInput name="quantity" value={form.quantity} onChange={handleChange} placeholder="Initial Quantity" type="number" min="0" required className="w-full dark:bg-zinc-800 dark:text-gray-100" />
+                                        </>
                                     )}
-                                    <label className="block text-sm font-medium text-muted-foreground">Supplier</label>
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Supplier</label>
                                     <select
                                         name="supplier_id"
                                         value={form.supplier_id}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 rounded-lg border border-muted bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                        className="w-full px-3 py-2 rounded-lg border border-muted bg-background dark:bg-zinc-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                                         required
                                     >
                                         <option value="">Select a supplier</option>
@@ -336,13 +342,13 @@ export default function Products({ suppliers = [] }) {
                                             <option key={s.id} value={s.id}>{s.name}</option>
                                         ))}
                                     </select>
-                                    <label className="block text-sm font-medium text-muted-foreground">Product Image</label>
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Product Image</label>
                                     <input
                                         type="file"
                                         name="image"
                                         accept="image/*"
                                         onChange={handleImageChange}
-                                        className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition"
+                                        className="w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition dark:bg-zinc-800 dark:text-gray-100"
                                     />
                                     {imagePreview && (
                                         <div className="my-2 flex items-center gap-2">
