@@ -112,7 +112,7 @@ export default function AuthenticatedLayout({ user, children }) {
                     </div>
                     {/* Welcome message, avatar, and theme toggle on the right */}
                     <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-base text-gray-500 dark:text-gray-300 truncate max-w-[180px]">Welcome, {user.name} ({user.role?.name})</span>
+                        <span className="text-base text-gray-500 dark:text-gray-300">Welcome, {user.name} ({user.role?.name})</span>
                         <Avatar.Root className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-700 shadow-lg">
                             <Avatar.Fallback className="text-white text-xl font-bold">
                                 {user.name[0]}
