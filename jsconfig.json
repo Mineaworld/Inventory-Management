@@ -4,7 +4,9 @@
         "paths": {
             "@/*": ["resources/js/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"]
-        }
+        },
+        "target": "es6",
+        "lib": ["es6", "dom"]
     },
     "exclude": ["node_modules", "public"]
 }
