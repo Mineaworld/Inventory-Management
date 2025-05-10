@@ -5,6 +5,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SupplierController;
+use App\Models\Supplier;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -25,7 +27,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('products', \App\Http\Controllers\ProductController::class);
     Route::get('/manage-products', function () {
-        return Inertia::render('Products');
+        return Inertia::render('Products', [
+            'suppliers' => Supplier::select('id', 'name')->orderBy('name')->get(),
+        ]);
     })->middleware(['auth', 'verified'])->name('products.manage');
     Route::get('/stock-movements', [\App\Http\Controllers\StockMovementController::class, 'index'])->name('stock-movements.index');
     Route::post('/stock-movements', [\App\Http\Controllers\StockMovementController::class, 'store'])->name('stock-movements.store');
@@ -41,6 +45,7 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('SalesReport');
     })->middleware(['auth', 'verified'])->name('report.sales');
     Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
+    Route::resource('suppliers', SupplierController::class);
 });
 
 require __DIR__.'/auth.php';

@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -16,6 +17,12 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->timestamps();
         });
+        // Insert default roles
+        DB::table('roles')->insert([
+            ['name' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Manager', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Staff', 'created_at' => now(), 'updated_at' => now()],
+        ]);
     }
 
     /**

@@ -15,6 +15,7 @@ import ThemeToggle from '@/Components/ThemeToggle';
 const navLinks = [
     { name: 'Dashboard', route: 'dashboard', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
     { name: 'Products', route: 'products.manage', icon: <CubeIcon className="w-5 h-5 mr-2" /> },
+    { name: 'Suppliers', route: 'suppliers.index', icon: <UserCircleIcon className="w-5 h-5 mr-2" /> },
     { name: 'Stock Movements', route: 'stock-movements.manage', icon: <ArrowsRightLeftIcon className="w-5 h-5 mr-2" /> },
     { name: 'Inventory Report', route: 'report.inventory', icon: <ChartBarIcon className="w-5 h-5 mr-2" /> },
     { name: 'Sales Report', route: 'report.sales', icon: <CurrencyDollarIcon className="w-5 h-5 mr-2" /> },

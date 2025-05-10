@@ -13,9 +13,9 @@ import { Toaster } from '@/Components/ui/Toaster';
 import { useToast } from '@/hooks/use-toast';
 import { createPortal } from 'react-dom';
 
-export default function Products() {
+export default function Products({ suppliers = [] }) {
     const [products, setProducts] = useState([]);
-    const [form, setForm] = useState({ name: '', description: '', price: '', quantity: '' });
+    const [form, setForm] = useState({ name: '', description: '', price: '', quantity: '', supplier_id: '' });
     const [editing, setEditing] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
@@ -61,6 +61,7 @@ export default function Products() {
             description: product.description,
             price: product.price,
             quantity: product.quantity,
+            supplier_id: product.supplier_id || '',
         });
     };
 
@@ -112,7 +113,7 @@ export default function Products() {
 
     const openAddModal = () => {
         setEditing(null);
-        setForm({ name: '', description: '', price: '', quantity: '' });
+        setForm({ name: '', description: '', price: '', quantity: '', supplier_id: '' });
         setImageFile(null);
         setImagePreview(null);
         setShowModal(true);
@@ -124,6 +125,7 @@ export default function Products() {
             description: product.description,
             price: product.price,
             quantity: product.quantity,
+            supplier_id: product.supplier_id || '',
         });
         setImageFile(null);
         setImagePreview(product.image ? `/storage/${product.image}` : null);
@@ -132,7 +134,7 @@ export default function Products() {
     const closeModal = () => {
         setShowModal(false);
         setEditing(null);
-        setForm({ name: '', description: '', price: '', quantity: '' });
+        setForm({ name: '', description: '', price: '', quantity: '', supplier_id: '' });
         setImageFile(null);
         setImagePreview(null);
     };
@@ -143,6 +145,7 @@ export default function Products() {
         formData.append('description', form.description);
         formData.append('price', form.price);
         formData.append('quantity', form.quantity);
+        formData.append('supplier_id', form.supplier_id);
         if (imageFile) {
             formData.append('image', imageFile);
         }
@@ -245,6 +248,7 @@ export default function Products() {
                                                 <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Product</th>
                                                 <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Description</th>
                                                 <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Price</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Supplier</th>
                                                 <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Status</th>
                                                 <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Inventory</th>
                                                 {isAdmin && <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Actions</th>}
@@ -285,6 +289,7 @@ export default function Products() {
                                                     </td>
                                                     <td className="py-2 px-3 whitespace-nowrap">{product.description}</td>
                                                     <td className="py-2 px-3 whitespace-nowrap">{Number(product.price).toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</td>
+                                                    <td className="py-2 px-3 whitespace-nowrap">{product.supplier_name || '-'}</td>
                                                     <td className="py-2 px-3">
                                                         <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">Active</span>
                                                     </td>
@@ -318,6 +323,19 @@ export default function Products() {
                                     {!editing && (
                                         <TextInput name="quantity" value={form.quantity} onChange={handleChange} placeholder="Initial Quantity" type="number" min="0" required className="w-full" />
                                     )}
+                                    <label className="block text-sm font-medium text-muted-foreground">Supplier</label>
+                                    <select
+                                        name="supplier_id"
+                                        value={form.supplier_id}
+                                        onChange={handleChange}
+                                        className="w-full px-3 py-2 rounded-lg border border-muted bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                        required
+                                    >
+                                        <option value="">Select a supplier</option>
+                                        {suppliers.map(s => (
+                                            <option key={s.id} value={s.id}>{s.name}</option>
+                                        ))}
+                                    </select>
                                     <label className="block text-sm font-medium text-muted-foreground">Product Image</label>
                                     <input
                                         type="file"

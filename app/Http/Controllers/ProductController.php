@@ -14,7 +14,11 @@ class ProductController extends Controller
     public function index()
     {
         // All authenticated users can view products
-        $products = Product::all();
+        $products = Product::with('supplier:id,name')->get()->map(function($product) {
+            $arr = $product->toArray();
+            $arr['supplier_name'] = $product->supplier ? $product->supplier->name : null;
+            return $arr;
+        });
         return response()->json($products);
     }
 
@@ -40,6 +44,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
+            'supplier_id' => 'required|exists:suppliers,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         if ($request->hasFile('image')) {
@@ -79,6 +84,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
+            'supplier_id' => 'required|exists:suppliers,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         if ($request->hasFile('image')) {
