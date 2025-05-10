@@ -36,7 +36,7 @@ A modern, full-stack inventory and stock management system built with React, Lar
 - **Frontend:** React, Inertia.js, Tailwind CSS
 - **Backend:** Laravel (PHP)
 - **Database:** MySQL (or compatible)
-- **Other:** Axios, Headless UI, Radix UI, Vite
+- **Other:** Axios, Shadcn UI, Radix UI, Vite
 
 ---
 
@@ -171,5 +171,5 @@ This project is open-source and available under the [MIT License](LICENSE).
 
 For questions, suggestions, or support, please contact:
 
-- **Your Name** – [your.email@example.com](mailto:your.email@example.com)
-- [GitHub Issues](https://github.com/your-username/stock-management-system/issues)
+- **Minea** – [minea.dyy@gmail.com](mailto:your.email@example.com)
+- [GitHub Issues](https://github.com/Mineaworld/Inventory-Management/issues)
