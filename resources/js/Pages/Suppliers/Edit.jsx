@@ -22,28 +22,28 @@ export default function Edit({ supplier }) {
 
     return (
         <AuthenticatedLayout user={auth.user}>
-            <div className="flex flex-col gap-4 p-4 md:p-6 bg-background min-h-screen">
+            <div className="flex flex-col gap-4 p-4 md:p-6 bg-background dark:bg-zinc-950 min-h-screen">
                 <div className="w-full max-w-lg mx-auto flex flex-col gap-6">
                     <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Edit Supplier</h1>
-                    <form onSubmit={submit} className="space-y-4 bg-white p-6 rounded shadow">
+                    <form onSubmit={submit} className="space-y-4 bg-white dark:bg-zinc-900 p-6 rounded shadow">
                         <div>
-                            <InputLabel htmlFor="name" value="Name" />
-                            <TextInput id="name" value={data.name} onChange={e => setData('name', e.target.value)} className="mt-1 block w-full" required autoFocus />
+                            <InputLabel htmlFor="name" value="Name" className="dark:text-gray-200" />
+                            <TextInput id="name" value={data.name} onChange={e => setData('name', e.target.value)} className="mt-1 block w-full dark:bg-zinc-800 dark:text-gray-100" required autoFocus />
                             <InputError message={errors.name} className="mt-1" />
                         </div>
                         <div>
-                            <InputLabel htmlFor="email" value="Email" />
-                            <TextInput id="email" type="email" value={data.email} onChange={e => setData('email', e.target.value)} className="mt-1 block w-full" />
+                            <InputLabel htmlFor="email" value="Email" className="dark:text-gray-200" />
+                            <TextInput id="email" type="email" value={data.email} onChange={e => setData('email', e.target.value)} className="mt-1 block w-full dark:bg-zinc-800 dark:text-gray-100" />
                             <InputError message={errors.email} className="mt-1" />
                         </div>
                         <div>
-                            <InputLabel htmlFor="phone" value="Phone" />
-                            <TextInput id="phone" value={data.phone} onChange={e => setData('phone', e.target.value)} className="mt-1 block w-full" />
+                            <InputLabel htmlFor="phone" value="Phone" className="dark:text-gray-200" />
+                            <TextInput id="phone" value={data.phone} onChange={e => setData('phone', e.target.value)} className="mt-1 block w-full dark:bg-zinc-800 dark:text-gray-100" />
                             <InputError message={errors.phone} className="mt-1" />
                         </div>
                         <div>
-                            <InputLabel htmlFor="address" value="Address" />
-                            <TextInput id="address" value={data.address} onChange={e => setData('address', e.target.value)} className="mt-1 block w-full" />
+                            <InputLabel htmlFor="address" value="Address" className="dark:text-gray-200" />
+                            <TextInput id="address" value={data.address} onChange={e => setData('address', e.target.value)} className="mt-1 block w-full dark:bg-zinc-800 dark:text-gray-100" />
                             <InputError message={errors.address} className="mt-1" />
                         </div>
                         <div className="flex justify-end">

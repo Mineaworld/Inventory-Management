@@ -38,28 +38,28 @@ export default function Suppliers({ suppliers, errors }) {
                 </div>
                 <div className="w-full max-w-6xl mx-auto flex flex-col gap-6">
                     {error && (
-                        <div className="mb-4 text-red-600 bg-red-100 border border-red-300 rounded p-2">
+                        <div className="mb-4 text-red-600 bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700 rounded p-2">
                             {error}
                         </div>
                     )}
-                    <div className="bg-white rounded shadow overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200 text-sm border-separate border-spacing-y-1">
-                            <thead className="bg-gray-50">
+                    <div className="bg-white dark:bg-zinc-900 rounded shadow overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-700 text-sm border-separate border-spacing-y-1">
+                            <thead className="bg-gray-50 dark:bg-zinc-800">
                                 <tr>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Address</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Name</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Email</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Phone</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Address</th>
                                     <th className="px-4 py-2"></th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-zinc-800">
                                 {suppliers.map((supplier) => (
-                                    <tr key={supplier.id} className="border border-muted/10 hover:bg-primary/5 transition rounded-lg">
-                                        <td className="px-4 py-2 font-semibold">{supplier.name}</td>
-                                        <td className="px-4 py-2">{supplier.email}</td>
-                                        <td className="px-4 py-2">{supplier.phone}</td>
-                                        <td className="px-4 py-2">{supplier.address}</td>
+                                    <tr key={supplier.id} className="border border-muted/10 dark:border-zinc-700 hover:bg-primary/5 dark:hover:bg-primary/10 transition rounded-lg">
+                                        <td className="px-4 py-2 font-semibold text-foreground dark:text-gray-100">{supplier.name}</td>
+                                        <td className="px-4 py-2 text-foreground dark:text-gray-100">{supplier.email}</td>
+                                        <td className="px-4 py-2 text-foreground dark:text-gray-100">{supplier.phone}</td>
+                                        <td className="px-4 py-2 text-foreground dark:text-gray-100">{supplier.address}</td>
                                         <td className="px-4 py-2 flex gap-2">
                                             <Link href={route('suppliers.edit', supplier.id)}>
                                                 <PrimaryButton>Edit</PrimaryButton>
