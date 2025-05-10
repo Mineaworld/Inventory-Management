@@ -11,6 +11,7 @@ import TextInput from '@/Components/TextInput';
 import Modal from '@/Components/Modal';
 import { Toaster } from '@/Components/ui/Toaster';
 import { useToast } from '@/hooks/use-toast';
+import { createPortal } from 'react-dom';
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -349,10 +350,10 @@ export default function Products() {
                                 </form>
                             </div>
                         </Modal>
-                        {imageModal.open && (
-                            <div className="fixed inset-0 z-50 flex items-center justify-center">
-                                <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setImageModal({ open: false, src: '', alt: '' })} />
-                                <div className="relative z-10">
+                        {imageModal.open && createPortal(
+                            <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+                                <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-20" onClick={() => setImageModal({ open: false, src: '', alt: '' })} />
+                                <div className="relative z-30">
                                     <button
                                         onClick={() => setImageModal({ open: false, src: '', alt: '' })}
                                         className="absolute top-2 right-2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 shadow focus:outline-none focus:ring-2 focus:ring-primary"
@@ -364,7 +365,8 @@ export default function Products() {
                                     </button>
                                     <img src={imageModal.src} alt={imageModal.alt} className="rounded-lg border shadow-lg max-w-full max-h-[80vh] bg-white" />
                                 </div>
-                            </div>
+                            </div>,
+                            document.body
                         )}
                         <Modal show={showDeleteModal} onClose={cancelDelete} maxWidth="sm">
                             <div className="p-6 flex flex-col items-center">
