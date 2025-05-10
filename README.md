@@ -1,6 +1,6 @@
 # Stock Management System
 
-A modern, full-stack inventory and stock management system built with React, Laravel, and Inertia.js. This application enables businesses to efficiently manage products, stock movements, and inventory levels with a user-friendly interface and robust backend.
+A modern, full-stack inventory and stock management system built with React, Laravel, and Inertia.js. This application enables businesses to efficiently manage products, suppliers, stock movements, and inventory levels with a user-friendly interface and robust backend.
 
 ---
 
@@ -21,11 +21,13 @@ A modern, full-stack inventory and stock management system built with React, Lar
 
 ## Features
 
-- User authentication and role-based access control (Admin, Employee, etc.)
-- Product CRUD (Create, Read, Update, Delete) with image upload
+- User authentication and role-based access control (Admin, Manager, Staff)
+- Product CRUD (Create, Read, Update, Delete) with image upload and supplier assignment
+- Supplier management: CRUD, assign suppliers to products, prevent deletion if linked to products, search, and improved UX (back button, sidebar integration)
 - Real-time stock movement tracking (purchases, sales, adjustments, returns)
+- Product table with supplier column and real-time updates after add/edit/delete
 - Search, filter, and sort products
-- Responsive and accessible UI
+- Responsive and accessible UI (Tailwind, modern layout, mobile-friendly)
 - Toast notifications for user feedback
 - Secure file uploads and data validation
 
@@ -33,10 +35,10 @@ A modern, full-stack inventory and stock management system built with React, Lar
 
 ## Tech Stack
 
-- **Frontend:** React, Inertia.js, Tailwind CSS
-- **Backend:** Laravel (PHP)
+- **Frontend:** React, Inertia.js, Tailwind CSS, Shadcn UI, Radix UI, Heroicons
+- **Backend:** Laravel (PHP 8.2+)
 - **Database:** MySQL (or compatible)
-- **Other:** Axios, Shadcn UI, Radix UI, Vite
+- **Other:** Axios, Vite, Laravel Sanctum, Ziggy
 
 ---
 
@@ -46,7 +48,7 @@ A modern, full-stack inventory and stock management system built with React, Lar
 
 - Node.js (v16+)
 - npm or yarn
-- PHP (v8.1+)
+- PHP (v8.2+)
 - Composer
 - MySQL or compatible database
 
@@ -125,11 +127,13 @@ php artisan migrate:rollback
 
 ## Usage
 
-- Log in as an admin to manage products and stock.
-- Add, edit, or delete products. Upload images for each product.
-- Track stock movements (purchases, sales, returns, adjustments).
-- Use the search and filter features to quickly find products.
-- All actions provide real-time feedback via toast notifications.
+- Log in as an admin to manage products, suppliers, and stock.
+- **Products:** Add, edit, or delete products. Assign a supplier to each product. Upload images.
+- **Suppliers:** Add, edit, or delete suppliers. Cannot delete a supplier if linked to products. Use the back button for easy navigation.
+- **Stock Movements:** Track purchases, sales, returns, and adjustments.
+- **Search and filter:** Quickly find products or suppliers.
+- **Real-time updates:** Product table updates instantly after changes.
+- **Modern UI:** Sidebar, topbar, and mobile-friendly design.
 
 ---
 
@@ -171,5 +175,5 @@ This project is open-source and available under the [MIT License](LICENSE).
 
 For questions, suggestions, or support, please contact:
 
-- **Minea** – [minea.dyy@gmail.com](mailto:your.email@example.com)
+- **Minea** – [minea.dyy@gmail.com](mailto:minea.dyy@gmail.com)
 - [GitHub Issues](https://github.com/Mineaworld/Inventory-Management/issues)
