@@ -232,7 +232,52 @@ export default function Products({ suppliers = [] }) {
                                         )}
                                     </div>
                                 </div>
-                                <div className="overflow-x-auto">
+                                <div className="md:hidden flex flex-col gap-2 p-2">
+                                    {filteredProducts.length === 0 ? (
+                                        <div className="text-center text-muted-foreground py-8">No products found.</div>
+                                    ) : (
+                                        filteredProducts.map(product => (
+                                            <Card key={product.id} className="flex flex-col gap-2 p-3 shadow border border-muted">
+                                                <div className="flex items-center gap-2">
+                                                    {product.image ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setImageModal({ open: true, src: `/storage/${product.image}`, alt: product.name })}
+                                                            className="focus:outline-none"
+                                                            aria-label={`View image for ${product.name}`}
+                                                        >
+                                                            <img
+                                                                src={`/storage/${product.image}`}
+                                                                alt={product.name}
+                                                                className="rounded-md border w-12 h-12 object-cover"
+                                                            />
+                                                        </button>
+                                                    ) : (
+                                                        <div className="w-12 h-12 flex items-center justify-center bg-muted rounded-md text-xs text-muted-foreground">IMG</div>
+                                                    )}
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="font-semibold text-base truncate">{product.name}</div>
+                                                        <div className="text-xs text-muted-foreground truncate">{product.description}</div>
+                                                        <div className="mt-1 text-sm font-medium text-primary">{Number(product.price).toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</div>
+                                                        <div className="mt-1 text-xs text-muted-foreground">Qty: <span className="font-semibold text-foreground">{product.quantity}</span></div>
+                                                        {product.supplier_name && (
+                                                            <div className="text-xs text-muted-foreground mt-1">Supplier: {product.supplier_name}</div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2 mt-1">
+                                                    {isAdmin && (
+                                                        <>
+                                                            <SecondaryButton onClick={() => openEditModal(product)} className="flex-1 py-1.5 px-2 text-xs rounded-md">Edit</SecondaryButton>
+                                                            <DangerButton onClick={() => handleDelete(product.id)} className="flex-1 py-1.5 px-2 text-xs rounded-md">Delete</DangerButton>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </Card>
+                                        ))
+                                    )}
+                                </div>
+                                <div className="hidden md:block overflow-x-auto">
                                     <table className="min-w-full text-sm border-separate border-spacing-y-1">
                                         <thead>
                                             <tr className="bg-background">

@@ -6,7 +6,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Sidebar from '@/Components/Sidebar';
-import { UserCircleIcon, Cog6ToothIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, Cog6ToothIcon, QuestionMarkCircleIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import ThemeToggle from '@/Components/ThemeToggle';
 import * as Avatar from '@radix-ui/react-avatar';
 import axios from 'axios';
@@ -18,6 +18,7 @@ export default function AuthenticatedLayout({ user, children }) {
     const [results, setResults] = useState({ products: [], movements: [] });
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     let debounceTimeout = null;
 
     const handleSearchChange = (e) => {
@@ -47,12 +48,26 @@ export default function AuthenticatedLayout({ user, children }) {
 
     return (
         <div className="flex min-h-screen bg-white dark:bg-[#18181b] dark:text-foreground font-sans">
-            <Sidebar user={user} />
-            <main className="flex-1 min-h-screen flex flex-col bg-white dark:bg-[#18181b] dark:text-foreground ml-[250px]">
+            {/* Sidebar: responsive */}
+            <Sidebar
+                user={user}
+                mobileOpen={mobileSidebarOpen}
+                onClose={() => setMobileSidebarOpen(false)}
+            />
+            {/* Main content */}
+            <main className="flex-1 min-h-screen flex flex-col bg-white dark:bg-[#18181b] dark:text-foreground transition-all duration-300 md:ml-[250px]">
                 {/* Topbar */}
-                <div className="flex items-center justify-between px-8 py-4 border-b border-white/10 bg-white/70 dark:bg-[#18181b]/80 backdrop-blur-md shadow-sm relative">
+                <div className="flex items-center justify-between px-4 sm:px-8 py-4 border-b border-white/10 bg-white/70 dark:bg-[#18181b]/80 backdrop-blur-md shadow-sm relative">
+                    {/* Hamburger for mobile */}
+                    <button
+                        className="md:hidden mr-2 p-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                        onClick={() => setMobileSidebarOpen(true)}
+                        aria-label="Open sidebar menu"
+                    >
+                        <Bars3Icon className="w-7 h-7 text-primary" />
+                    </button>
                     {/* Search input on the left */}
-                    <div className="relative">
+                    <div className="relative flex-1 max-w-xs">
                         <input
                             type="text"
                             placeholder="Search..."
@@ -60,7 +75,7 @@ export default function AuthenticatedLayout({ user, children }) {
                             onChange={handleSearchChange}
                             onFocus={() => setShowDropdown(!!search)}
                             onBlur={handleBlur}
-                            className="w-64 px-3 py-2 rounded-xl border border-white/10 bg-white/80 dark:bg-[#232329]/80 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:text-foreground shadow"
+                            className="w-full px-3 py-2 rounded-xl border border-white/10 bg-white/80 dark:bg-[#232329]/80 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 dark:text-foreground shadow"
                         />
                         {showDropdown && (search || loading) && (
                             <div className="absolute left-0 mt-2 w-80 bg-white dark:bg-[#232329] border border-muted rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
@@ -111,8 +126,8 @@ export default function AuthenticatedLayout({ user, children }) {
                         )}
                     </div>
                     {/* Welcome message, avatar, and theme toggle on the right */}
-                    <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-base text-gray-500 dark:text-gray-300">Welcome, {user.name} ({user.role?.name})</span>
+                    <div className="flex items-center gap-2 md:gap-4 ml-2 md:ml-0">
+                        <span className="hidden sm:inline text-base text-gray-500 dark:text-gray-300">Welcome, {user.name} ({user.role?.name})</span>
                         <Avatar.Root className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-700 shadow-lg">
                             <Avatar.Fallback className="text-white text-xl font-bold">
                                 {user.name[0]}
@@ -122,7 +137,7 @@ export default function AuthenticatedLayout({ user, children }) {
                     </div>
                 </div>
                 <div className="flex-1 flex flex-col items-center overflow-y-auto">
-                    <div className="w-full max-w-6xl mx-auto px-4 pb-8 flex-1">
+                    <div className="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-8 flex-1">
                         {children}
                     </div>
                 </div>

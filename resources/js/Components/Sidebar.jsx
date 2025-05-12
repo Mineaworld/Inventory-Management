@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { Link as InertiaLink } from '@inertiajs/react';
 import {
@@ -9,6 +9,7 @@ import {
     CurrencyDollarIcon,
     ArrowLeftOnRectangleIcon,
     UserCircleIcon,
+    XMarkIcon,
 } from '@heroicons/react/24/outline';
 import ThemeToggle from '@/Components/ThemeToggle';
 
@@ -21,14 +22,58 @@ const navLinks = [
     { name: 'Sales Report', route: 'report.sales', icon: <CurrencyDollarIcon className="w-5 h-5 mr-2" /> },
 ];
 
-export default function Sidebar({ user }) {
+export default function Sidebar({ user, mobileOpen = false, onClose }) {
     const { auth } = usePage().props;
     user = user || auth.user;
+    const sidebarRef = useRef(null);
 
-    return (
-        <aside className="fixed left-0 top-0 h-screen w-[250px] bg-background dark:bg-background border-r border-muted shadow-xl flex flex-col rounded-r-2xl overflow-hidden font-sans text-foreground dark:text-foreground z-40 text-[1.1rem] md:text-[1.15rem]">
-            <div className="p-4 text-xl font-extrabold tracking-tight border-b border-muted bg-background/80 dark:bg-background/80 text-foreground dark:text-foreground text-2xl">
-                <span className="text-primary">Inventory</span>Pro
+    // Trap focus and close on ESC for accessibility
+    useEffect(() => {
+        if (!mobileOpen) return;
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') onClose();
+            // Trap focus
+            if (e.key === 'Tab' && sidebarRef.current) {
+                const focusable = sidebarRef.current.querySelectorAll('a,button,input,select,textarea,[tabindex]:not([tabindex="-1"])');
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                } else if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                }
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        // Focus the sidebar
+        setTimeout(() => {
+            if (sidebarRef.current) {
+                const focusable = sidebarRef.current.querySelectorAll('a,button,input,select,textarea,[tabindex]:not([tabindex="-1"])');
+                if (focusable[0]) focusable[0].focus();
+            }
+        }, 50);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [mobileOpen, onClose]);
+
+    // Sidebar content
+    const sidebarContent = (
+        <aside
+            ref={sidebarRef}
+            className="h-screen w-[250px] bg-white dark:bg-zinc-900 border-r border-muted shadow-2xl flex flex-col rounded-r-2xl overflow-hidden font-sans text-foreground dark:text-foreground z-40 text-[1.1rem] md:text-[1.15rem] focus:outline-none"
+            tabIndex={-1}
+        >
+            <div className="p-4 text-xl font-extrabold tracking-tight border-b border-muted bg-background/80 dark:bg-background/80 text-foreground dark:text-foreground text-2xl flex items-center justify-between">
+                <span className="text-primary">Inventory Pro</span>
+                {/* Close button for mobile */}
+                <button
+                    className="md:hidden ml-2 p-1 rounded hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary"
+                    onClick={onClose}
+                    aria-label="Close sidebar"
+                >
+                    <XMarkIcon className="w-6 h-6" />
+                </button>
             </div>
             <nav className="flex-1 py-4 px-2 flex flex-col">
                 <div className="mb-2 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-widest text-base md:text-lg">Main</div>
@@ -67,5 +112,34 @@ export default function Sidebar({ user }) {
                 </div>
             </nav>
         </aside>
+    );
+
+    // Mobile drawer overlay with animation
+    return (
+        <>
+            {/* Desktop sidebar */}
+            <div className="hidden md:block fixed left-0 top-0 z-40">
+                {sidebarContent}
+            </div>
+            {/* Mobile sidebar drawer with animation */}
+            <div
+                className={`fixed inset-0 z-50 flex md:hidden pointer-events-none`}
+                aria-hidden={!mobileOpen}
+            >
+                {/* Backdrop */}
+                <div
+                    className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                    onClick={onClose}
+                    aria-label="Close sidebar backdrop"
+                />
+                {/* Slide-in sidebar */}
+                <div
+                    className={`relative z-50 w-[250px] h-full bg-background dark:bg-background shadow-2xl transform transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} pointer-events-auto`}
+                    style={{ willChange: 'transform' }}
+                >
+                    {sidebarContent}
+                </div>
+            </div>
+        </>
     );
 }
