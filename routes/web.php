@@ -70,7 +70,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Translation API endpoint (no auth required)
-Route::get('/api/translations', [TranslationController::class, 'index'])->name('translations.index');
+Route::get('/api/translations', [\App\Http\Controllers\TranslationController::class, 'index'])->name('translations.index');
 
 // Auth routes (login, register, etc.)
 require __DIR__.'/auth.php';

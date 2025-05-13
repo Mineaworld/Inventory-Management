@@ -12,6 +12,7 @@ import Modal from '@/Components/Modal';
 import { Toaster } from '@/Components/ui/Toaster';
 import { useToast } from '@/hooks/use-toast';
 import { createPortal } from 'react-dom';
+import { useLanguage } from '@/Context/LanguageContext';
 
 export default function Products({ suppliers = [] }) {
     const [products, setProducts] = useState([]);
@@ -30,6 +31,7 @@ export default function Products({ suppliers = [] }) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState(null);
     const { toast } = useToast();
+    const { t } = useLanguage();
 
     useEffect(() => {
         fetchProducts();
@@ -190,33 +192,33 @@ export default function Products({ suppliers = [] }) {
                 <Head title="Products" />
                 <div className="flex flex-col gap-4 p-4 md:p-6 bg-background min-h-screen">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
-                        <h2 className="text-3xl font-bold tracking-tight text-foreground">Products</h2>
+                        <h2 className="text-3xl font-bold tracking-tight text-foreground">{t('products')}</h2>
                     </div>
                     <div className="w-full max-w-6xl mx-auto flex flex-col gap-6">
                         <Card className="p-0">
                             <CardHeader className="border-b">
-                                <CardTitle className="text-xl font-bold">My products</CardTitle>
+                                <CardTitle className="text-xl font-bold">{t('my_products') || t('products')}</CardTitle>
                             </CardHeader>
                             <CardContent className="p-0">
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 px-6 py-4 border-b">
                                     <div className="flex gap-2 items-center">
-                                        {['all', 'active', 'draft', 'archived'].map(f => (
+                                        {[t('all'), t('active'), t('draft'), t('archived')].map((f, i) => (
                                             <SecondaryButton
                                                 key={f}
-                                                onClick={() => setFilter(f)}
+                                                onClick={() => setFilter(['all', 'active', 'draft', 'archived'][i])}
                                                 className={`px-3 py-1 rounded-full text-sm font-medium transition border focus:outline-none focus:ring-2 focus:ring-primary/40
-                                                    ${filter === f ? 'bg-primary text-white border-primary shadow-none' : 'bg-muted text-foreground border-muted hover:bg-primary/10'}
+                                                    ${filter === ['all', 'active', 'draft', 'archived'][i] ? 'bg-primary text-white border-primary shadow-none' : 'bg-muted text-foreground border-muted hover:bg-primary/10'}
                                                 `}
-                                                style={filter === f ? { color: 'black', borderColor: 'transparent' } : {}}
+                                                style={filter === ['all', 'active', 'draft', 'archived'][i] ? { color: 'black', borderColor: 'transparent' } : {}}
                                             >
-                                                {f.charAt(0).toUpperCase() + f.slice(1)}
+                                                {f}
                                             </SecondaryButton>
                                         ))}
                                     </div>
                                     <div className="flex gap-2 items-center w-full md:w-auto">
                                         <TextInput
                                             type="text"
-                                            placeholder="Search"
+                                            placeholder={t('search')}
                                             value={searchTerm}
                                             onChange={e => setSearchTerm(e.target.value)}
                                             className="px-3 py-2 rounded-lg border border-muted bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 w-full md:w-48"
@@ -225,16 +227,16 @@ export default function Products({ suppliers = [] }) {
                                             setSortBy(sortBy === 'name' ? 'price' : sortBy === 'price' ? 'quantity' : 'name');
                                             setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
                                         }}>
-                                            Sort by {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)} {sortDir === 'asc' ? '↑' : '↓'}
+                                            {t('sort_by')} {t(sortBy)} {sortDir === 'asc' ? '↑' : '↓'}
                                         </SecondaryButton>
                                         {isAdmin && (
-                                            <PrimaryButton onClick={openAddModal}>+ Add Product</PrimaryButton>
+                                            <PrimaryButton onClick={openAddModal}>+ {t('add_product')}</PrimaryButton>
                                         )}
                                     </div>
                                 </div>
                                 <div className="md:hidden flex flex-col gap-2 p-2">
                                     {filteredProducts.length === 0 ? (
-                                        <div className="text-center text-muted-foreground py-8">No products found.</div>
+                                        <div className="text-center text-muted-foreground py-8">{t('no_products_found') || t('no_records')}</div>
                                     ) : (
                                         filteredProducts.map(product => (
                                             <Card key={product.id} className="flex flex-col gap-2 p-3 shadow border border-muted">
@@ -244,7 +246,7 @@ export default function Products({ suppliers = [] }) {
                                                             type="button"
                                                             onClick={() => setImageModal({ open: true, src: `/storage/${product.image}`, alt: product.name })}
                                                             className="focus:outline-none"
-                                                            aria-label={`View image for ${product.name}`}
+                                                            aria-label={`${t('view_image_for')} ${product.name}`}
                                                         >
                                                             <img
                                                                 src={`/storage/${product.image}`}
@@ -259,17 +261,17 @@ export default function Products({ suppliers = [] }) {
                                                         <div className="font-semibold text-base truncate">{product.name}</div>
                                                         <div className="text-xs text-muted-foreground truncate">{product.description}</div>
                                                         <div className="mt-1 text-sm font-medium text-primary">{Number(product.price).toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</div>
-                                                        <div className="mt-1 text-xs text-muted-foreground">Qty: <span className="font-semibold text-foreground">{product.quantity}</span></div>
+                                                        <div className="mt-1 text-xs text-muted-foreground">{t('qty') || 'Qty'}: <span className="font-semibold text-foreground">{product.quantity}</span></div>
                                                         {product.supplier_name && (
-                                                            <div className="text-xs text-muted-foreground mt-1">Supplier: {product.supplier_name}</div>
+                                                            <div className="text-xs text-muted-foreground mt-1">{t('supplier') || 'Supplier'}: {product.supplier_name}</div>
                                                         )}
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-2 mt-1">
                                                     {isAdmin && (
                                                         <>
-                                                            <SecondaryButton onClick={() => openEditModal(product)} className="flex-1 py-1.5 px-2 text-xs rounded-md">Edit</SecondaryButton>
-                                                            <DangerButton onClick={() => handleDelete(product.id)} className="flex-1 py-1.5 px-2 text-xs rounded-md">Delete</DangerButton>
+                                                            <SecondaryButton onClick={() => openEditModal(product)} className="flex-1 py-1.5 px-2 text-xs rounded-md">{t('edit')}</SecondaryButton>
+                                                            <DangerButton onClick={() => handleDelete(product.id)} className="flex-1 py-1.5 px-2 text-xs rounded-md">{t('delete')}</DangerButton>
                                                         </>
                                                     )}
                                                 </div>
@@ -289,14 +291,14 @@ export default function Products({ suppliers = [] }) {
                                                         onChange={handleSelectAll}
                                                     />
                                                 </th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Image</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Product</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Description</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Price</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Supplier</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Status</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Inventory</th>
-                                                {isAdmin && <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Actions</th>}
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('image') || 'Image'}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('product') || 'Product'}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('description')}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('price')}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('supplier') || 'Supplier'}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('status')}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('inventory')}</th>
+                                                {isAdmin && <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('actions')}</th>}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -316,7 +318,7 @@ export default function Products({ suppliers = [] }) {
                                                                 type="button"
                                                                 onClick={() => setImageModal({ open: true, src: `/storage/${product.image}`, alt: product.name })}
                                                                 className="focus:outline-none"
-                                                                aria-label={`View image for ${product.name}`}
+                                                                aria-label={`${t('view_image_for')} ${product.name}`}
                                                             >
                                                                 <img
                                                                     src={`/storage/${product.image}`}
@@ -332,26 +334,32 @@ export default function Products({ suppliers = [] }) {
                                                     <td className="py-2 px-3 whitespace-nowrap">
                                                         <span className="font-medium">{product.name}</span>
                                                     </td>
-                                                    <td className="py-2 px-3 whitespace-nowrap">{product.description}</td>
+                                                    <td className="py-2 px-3 whitespace-nowrap">
+                                                        {product.description && product.description.trim() !== '' && product.description.trim().toLowerCase() !== 'null' ? (
+                                                            product.description
+                                                        ) : (
+                                                            <span className="text-xs text-muted-foreground italic">{t('no_description')}</span>
+                                                        )}
+                                                    </td>
                                                     <td className="py-2 px-3 whitespace-nowrap">{Number(product.price).toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</td>
                                                     <td className="py-2 px-3 whitespace-nowrap">{product.supplier_name || '-'}</td>
                                                     <td className="py-2 px-3">
-                                                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">Active</span>
+                                                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">{t('active')}</span>
                                                     </td>
                                                     <td className="py-2 px-3">
                                                         {product.quantity > 0 ? (
-                                                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">{product.quantity} in stock</span>
+                                                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">{product.quantity} {t('in_stock') || 'in stock'}</span>
                                                         ) : (
-                                                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">Out of Stock</span>
+                                                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">{t('out_of_stock')}</span>
                                                         )}
                                                     </td>
                                                     {isAdmin && (
                                                         <td className="py-2 px-3 whitespace-nowrap">
-                                                            <SecondaryButton onClick={() => openEditModal(product)} className="mr-2">Edit</SecondaryButton>
-                                                            <DangerButton onClick={() => handleDelete(product.id)}>Delete</DangerButton>
+                                                            <SecondaryButton onClick={() => openEditModal(product)} className="mr-2">{t('edit')}</SecondaryButton>
+                                                            <DangerButton onClick={() => handleDelete(product.id)}>{t('delete')}</DangerButton>
                                                         </td>
                                                     )}
-                                                </tr>
+                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
@@ -360,21 +368,21 @@ export default function Products({ suppliers = [] }) {
                         </Card>
                         <Modal show={showModal} onClose={closeModal} maxWidth="md">
                             <div className="p-6 bg-white dark:bg-zinc-900 rounded">
-                                <h3 className="text-lg font-semibold mb-4 text-foreground dark:text-gray-100">{editing ? 'Edit Product' : 'Add Product'}</h3>
+                                <h3 className="text-lg font-semibold mb-4 text-foreground dark:text-gray-100">{editing ? t('edit_product') : t('add_product')}</h3>
                                 <form onSubmit={handleModalSubmit} className="space-y-4">
-                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Name</label>
-                                    <TextInput name="name" value={form.name} onChange={handleChange} placeholder="Name" required className="w-full dark:bg-zinc-800 dark:text-gray-100" />
-                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Description</label>
-                                    <TextInput name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full dark:bg-zinc-800 dark:text-gray-100" />
-                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Price</label>
-                                    <TextInput name="price" value={form.price} onChange={handleChange} placeholder="Price" type="number" min="0" step="0.01" required className="w-full dark:bg-zinc-800 dark:text-gray-100" />
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">{t('name')}</label>
+                                    <TextInput name="name" value={form.name} onChange={handleChange} placeholder={t('name')} required className="w-full dark:bg-zinc-800 dark:text-gray-100" />
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">{t('description')}</label>
+                                    <TextInput name="description" value={form.description} onChange={handleChange} placeholder={t('description')} className="w-full dark:bg-zinc-800 dark:text-gray-100" />
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">{t('price')}</label>
+                                    <TextInput name="price" value={form.price} onChange={handleChange} placeholder={t('price')} type="number" min="0" step="0.01" required className="w-full dark:bg-zinc-800 dark:text-gray-100" />
                                     {!editing && (
                                         <>
-                                            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Initial Quantity</label>
-                                            <TextInput name="quantity" value={form.quantity} onChange={handleChange} placeholder="Initial Quantity" type="number" min="0" required className="w-full dark:bg-zinc-800 dark:text-gray-100" />
+                                            <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">{t('initial_quantity') || t('quantity')}</label>
+                                            <TextInput name="quantity" value={form.quantity} onChange={handleChange} placeholder={t('initial_quantity') || t('quantity')} type="number" min="0" required className="w-full dark:bg-zinc-800 dark:text-gray-100" />
                                         </>
                                     )}
-                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Supplier</label>
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">{t('supplier') || 'Supplier'}</label>
                                     <select
                                         name="supplier_id"
                                         value={form.supplier_id}
@@ -382,12 +390,12 @@ export default function Products({ suppliers = [] }) {
                                         className="w-full px-3 py-2 rounded-lg border border-muted bg-background dark:bg-zinc-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                                         required
                                     >
-                                        <option value="">Select a supplier</option>
+                                        <option value="">{t('select_supplier') || 'Select a supplier'}</option>
                                         {suppliers.map(s => (
                                             <option key={s.id} value={s.id}>{s.name}</option>
                                         ))}
                                     </select>
-                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">Product Image</label>
+                                    <label className="block text-sm font-medium text-muted-foreground dark:text-gray-200">{t('product_image') || 'Product Image'}</label>
                                     <input
                                         type="file"
                                         name="image"
@@ -413,8 +421,8 @@ export default function Products({ suppliers = [] }) {
                                         </div>
                                     )}
                                     <div className="flex gap-2 justify-end">
-                                        <SecondaryButton type="button" onClick={closeModal}>Cancel</SecondaryButton>
-                                        <PrimaryButton type="submit">{editing ? 'Update' : 'Add'} Product</PrimaryButton>
+                                        <SecondaryButton type="button" onClick={closeModal}>{t('cancel')}</SecondaryButton>
+                                        <PrimaryButton type="submit">{editing ? t('update') : t('add')} {t('product')}</PrimaryButton>
                                     </div>
                                 </form>
                             </div>
@@ -439,11 +447,11 @@ export default function Products({ suppliers = [] }) {
                         )}
                         <Modal show={showDeleteModal} onClose={cancelDelete} maxWidth="sm">
                             <div className="p-6 flex flex-col items-center">
-                                <h3 className="text-lg font-semibold mb-2 text-center">Delete Product</h3>
-                                <p className="mb-4 text-center text-muted-foreground">Are you sure you want to delete this product? This action cannot be undone.</p>
+                                <h3 className="text-lg font-semibold mb-2 text-center">{t('delete_product')}</h3>
+                                <p className="mb-4 text-center text-muted-foreground">{t('are_you_sure_delete')}</p>
                                 <div className="flex gap-2 justify-center">
-                                    <SecondaryButton type="button" onClick={cancelDelete}>Cancel</SecondaryButton>
-                                    <DangerButton type="button" onClick={confirmDelete}>Delete</DangerButton>
+                                    <SecondaryButton type="button" onClick={cancelDelete}>{t('cancel')}</SecondaryButton>
+                                    <DangerButton type="button" onClick={confirmDelete}>{t('delete')}</DangerButton>
                                 </div>
                             </div>
                         </Modal>

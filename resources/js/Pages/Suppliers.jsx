@@ -4,12 +4,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
 import DangerButton from '@/Components/DangerButton';
 import Modal from '@/Components/Modal';
+import { useLanguage } from '@/Context/LanguageContext';
 
 export default function Suppliers({ suppliers, errors }) {
     const { auth } = usePage().props;
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
     const [error, setError] = useState(errors?.error || '');
+    const { t } = useLanguage();
 
     const handleDelete = (supplier) => {
         setSelectedSupplier(supplier);
@@ -31,9 +33,9 @@ export default function Suppliers({ suppliers, errors }) {
         <AuthenticatedLayout user={auth.user}>
             <div className="flex flex-col gap-4 p-4 md:p-6 bg-background min-h-screen">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
-                    <h2 className="text-3xl font-bold tracking-tight text-foreground">Suppliers</h2>
+                    <h2 className="text-3xl font-bold tracking-tight text-foreground">{t('suppliers')}</h2>
                     <Link href={route('suppliers.create')}>
-                        <PrimaryButton>Add Supplier</PrimaryButton>
+                        <PrimaryButton>{t('add_supplier')}</PrimaryButton>
                     </Link>
                 </div>
                 <div className="w-full max-w-6xl mx-auto flex flex-col gap-6">
@@ -46,10 +48,10 @@ export default function Suppliers({ suppliers, errors }) {
                         <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-700 text-sm border-separate border-spacing-y-1">
                             <thead className="bg-gray-50 dark:bg-zinc-800">
                                 <tr>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Name</th>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Email</th>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Phone</th>
-                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Address</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">{t('name')}</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">{t('email')}</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">{t('phone')}</th>
+                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">{t('address')}</th>
                                     <th className="px-4 py-2"></th>
                                 </tr>
                             </thead>
@@ -62,10 +64,10 @@ export default function Suppliers({ suppliers, errors }) {
                                         <td className="px-4 py-2 text-foreground dark:text-gray-100">{supplier.address}</td>
                                         <td className="px-4 py-2 flex gap-2">
                                             <Link href={route('suppliers.edit', supplier.id)}>
-                                                <PrimaryButton>Edit</PrimaryButton>
+                                                <PrimaryButton>{t('edit')}</PrimaryButton>
                                             </Link>
                                             <DangerButton onClick={() => handleDelete(supplier)}>
-                                                Delete
+                                                {t('delete')}
                                             </DangerButton>
                                         </td>
                                     </tr>
@@ -76,12 +78,12 @@ export default function Suppliers({ suppliers, errors }) {
                 </div>
                 <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
                     <div className="p-6">
-                        <h2 className="text-lg font-bold mb-4">Delete Supplier</h2>
-                        <p>Are you sure you want to delete <span className="font-semibold">{selectedSupplier?.name}</span>? This action cannot be undone.</p>
+                        <h2 className="text-lg font-bold mb-4">{t('delete_supplier')}</h2>
+                        <p>{t('are_you_sure_delete')} <span className="font-semibold">{selectedSupplier?.name}</span>? {t('this_action_cannot_be_undone')}</p>
                         {error && <div className="text-red-600 mt-2">{error}</div>}
                         <div className="mt-6 flex justify-end gap-2">
-                            <button className="px-4 py-2 rounded bg-gray-200" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-                            <DangerButton onClick={confirmDelete}>Delete</DangerButton>
+                            <button className="px-4 py-2 rounded bg-gray-200" onClick={() => setShowDeleteModal(false)}>{t('cancel')}</button>
+                            <DangerButton onClick={confirmDelete}>{t('delete')}</DangerButton>
                         </div>
                     </div>
                 </Modal>

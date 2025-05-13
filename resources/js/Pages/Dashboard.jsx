@@ -98,7 +98,7 @@ function ModernBarChart({ data = [] }) {
         return () => match.removeEventListener('change', handler);
     }, []);
 
-    return (
+   return (
         <Card>
             <CardHeader>
                 <CardTitle>{t('stock_movements')}</CardTitle>
@@ -125,12 +125,24 @@ function ModernBarChart({ data = [] }) {
                     </BarChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col items-start gap-2 text-sm">
-                <div className="flex gap-2 font-medium leading-none">
-                    Trending up <TrendingUp className="h-4 w-4" />
+            <CardFooter className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-sm">
+                <div className="flex gap-4 items-center mb-2 md:mb-0">
+                    <span>
+                        <span style={{ background: '#3b82f6', display: 'inline-block', width: 12, height: 12, borderRadius: 2, marginRight: 4 }}></span>
+                        {t('stock_in')} (Purchases/Returns)
+                    </span>
+                    <span>
+                        <span style={{ background: '#22c55e', display: 'inline-block', width: 12, height: 12, borderRadius: 2, marginRight: 4 }}></span>
+                        {t('stock_out')} (Sales/Adjustments)
+                    </span>
                 </div>
-                <div className="leading-none text-muted-foreground">
-                    {t('recent_movements')}
+                <div className="flex flex-col items-end">
+                    <span className="font-medium">
+                        {t('stock_in')}: {Array.isArray(data) ? data.reduce((sum, d) => sum + (d.in || 0), 0) : 0}
+                    </span>
+                    <span className="font-medium">
+                        {t('stock_out')}: {Array.isArray(data) ? data.reduce((sum, d) => sum + (d.out || 0), 0) : 0}
+                    </span>
                 </div>
             </CardFooter>
         </Card>
@@ -268,9 +280,10 @@ export default function Dashboard() {
         try {
             const response = await axios.get('/stock-movements');
             console.log('Movements response:', response.data);
-            
-            // Check if we have a valid response with movements data
-            const movementsData = response.data?.movements || [];
+            // Accept both array and object response
+            const movementsData = Array.isArray(response.data)
+                ? response.data
+                : (response.data?.movements || []);
             
             if (Array.isArray(movementsData)) {
                 // Prepare recent movements for the table
@@ -295,7 +308,12 @@ export default function Dashboard() {
                             monthlyDataMap[month] = { in: 0, out: 0 };
                         }
                         if (m?.type && m?.quantity) {
-                            monthlyDataMap[month][m.type] += parseInt(m.quantity) || 0;
+                            const qty = parseInt(m.quantity) || 0;
+                            if (["purchase", "return"].includes(m.type)) {
+                                monthlyDataMap[month].in += qty;
+                            } else if (["sale", "adjustment"].includes(m.type)) {
+                                monthlyDataMap[month].out += qty;
+                            }
                         }
                     }
                 });
@@ -329,6 +347,11 @@ export default function Dashboard() {
     useEffect(() => {
         fetchProductStats();
         fetchMovements();
+        const interval = setInterval(() => {
+            fetchProductStats();
+            fetchMovements();
+        }, 10000); // every 10 seconds
+        return () => clearInterval(interval);
     }, []);
     
     return (
@@ -372,15 +395,15 @@ function QuickActions() {
     return (
         <div className="rounded-2xl border border-muted bg-background dark:bg-[#18181b] shadow-lg p-4 overflow-hidden flex flex-col justify-between">
             <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400">{t('actions')}</h3>
-            <div className="mt-2 space-y-2">
-                <Link href={route('products.create')} className="w-full">
-                    <Button className="w-full" variant="default">
+            <div className="mt-2 space-y-2 flex flex-col gap-2">
+                <Link href={route('products.manage')} className="w-full">
+                    <Button className="w-full bg-black text-white ">
                         <PlusIcon className="w-4 h-4 mr-2" />
                         <span className="text-sm">{t('add_product')}</span>
                     </Button>
                 </Link>
                 <Link href={route('stock-movements.manage')} className="w-full">
-                    <Button className="w-full" variant="secondary">
+                    <Button className="w-full bg-black text-white">
                         <PlusIcon className="w-4 h-4 mr-2" />
                         <span className="text-sm">{t('stock_movements')}</span>
                     </Button>

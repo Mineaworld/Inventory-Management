@@ -15,7 +15,7 @@ import ThemeToggle from '@/Components/ThemeToggle';
 import { useLanguage } from '@/Context/LanguageContext';
 
 export default function Sidebar({ user, mobileOpen = false, onClose }) {
-    const { auth } = usePage().props;
+    const { auth, url } = usePage().props;
     const { t } = useLanguage();
     user = user || auth.user;
     const sidebarRef = useRef(null);
@@ -28,6 +28,12 @@ export default function Sidebar({ user, mobileOpen = false, onClose }) {
         { name: t('inventory') + ' ' + t('reports'), route: 'report.inventory', icon: <ChartBarIcon className="w-5 h-5 mr-2" /> },
         { name: t('sales_overview'), route: 'report.sales', icon: <CurrencyDollarIcon className="w-5 h-5 mr-2" /> },
     ];
+
+    const isActive = (routeName) => {
+        const currentPath = url || window.location.pathname;
+        const basePath = route(routeName).replace(window.location.origin, '');
+        return currentPath.startsWith(basePath);
+    };
 
     // Trap focus and close on ESC for accessibility
     useEffect(() => {
@@ -86,8 +92,8 @@ export default function Sidebar({ user, mobileOpen = false, onClose }) {
                                 href={route(link.route)}
                                 className={`
                                     flex items-center px-3 py-2 rounded-lg transition-all text-sm font-medium md:text-base
-                                    ${window.location.pathname === route(link.route)
-                                        ? 'bg-primary/10 text-primary font-semibold shadow-md'
+                                    ${isActive(link.route)
+                                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-semibold shadow-md'
                                         : 'hover:bg-muted hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/30'}
                                 `}
                             >

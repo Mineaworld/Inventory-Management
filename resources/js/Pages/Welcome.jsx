@@ -4,7 +4,7 @@ import { Button } from '@/Components/ui/button';
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
     return (
         <>
-            <Head title="Welcome to Stock Management System" />
+            <Head title="Welcome to Stock Management " />
             <div className="relative min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
                 {/* Header/Navigation */}
                 <header className="relative z-10 border-b border-gray-200 bg-white/80 backdrop-blur-sm">

@@ -11,6 +11,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Toaster } from '@/Components/ui/Toaster';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/Components/ui/button';
+import { useLanguage } from '@/Context/LanguageContext';
 
 export default function StockMovements() {
     const [movements, setMovements] = useState([]);
@@ -20,6 +21,7 @@ export default function StockMovements() {
     const { auth } = usePage().props;
     const [showModal, setShowModal] = useState(false);
     const { toast } = useToast();
+    const { t } = useLanguage();
 
     const isAdminOrEmployee = auth.user && auth.user.role && (
         auth.user.role.name === 'Admin' || auth.user.role.name === 'Employee'
@@ -78,30 +80,30 @@ export default function StockMovements() {
         <>
             <Toaster />
             <AuthenticatedLayout user={auth.user}>
-                <Head title="Stock Movements" />
+                <Head title={t('stock_movements')} />
                 <div className="flex flex-col gap-4 p-4 md:p-6 bg-background min-h-screen">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
-                        <h2 className="text-3xl font-bold tracking-tight text-foreground">Stock Movements</h2>
+                        <h2 className="text-3xl font-bold tracking-tight text-foreground">{t('stock_movements')}</h2>
                         {isAdminOrEmployee && (
-                            <PrimaryButton onClick={openModal}>+ Add Movement</PrimaryButton>
+                            <PrimaryButton onClick={openModal}>+ {t('add_movement')}</PrimaryButton>
                         )}
                     </div>
                     <div className="w-full mx-auto flex flex-col gap-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Recent Stock Movements</CardTitle>
+                                <CardTitle>{t('recent_stock_movements')}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="overflow-x-auto w-full">
                                     <table className="w-full text-sm border-separate border-spacing-y-1">
                                         <thead>
                                             <tr className="bg-background">
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Date</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Product</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Type</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Quantity</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">User</th>
-                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">Note</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('date')}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('product')}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('type')}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('quantity')}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('user')}</th>
+                                                <th className="py-2 px-3 text-left font-semibold text-muted-foreground border-b border-muted">{t('note')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -123,37 +125,37 @@ export default function StockMovements() {
                         {/* Add Movement Modal */}
                         <Modal show={showModal} onClose={closeModal} maxWidth="md">
                             <div className="p-6">
-                                <h3 className="text-lg font-semibold mb-4">Add Stock Movement</h3>
+                                <h3 className="text-lg font-semibold mb-4">{t('add_stock_movement')}</h3>
                                 <form onSubmit={handleModalSubmit} className="space-y-4">
                                     <div>
-                                        <label className="block mb-1 text-sm font-medium">Product</label>
+                                        <label className="block mb-1 text-sm font-medium">{t('product')}</label>
                                         <select name="product_id" value={form.product_id} onChange={handleChange} required className="border p-2 w-full rounded">
-                                            <option value="">Select Product</option>
+                                            <option value="">{t('select_product')}</option>
                                             {products.map(product => (
                                                 <option key={product.id} value={product.id}>{product.name}</option>
                                             ))}
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block mb-1 text-sm font-medium">Type</label>
+                                        <label className="block mb-1 text-sm font-medium">{t('type')}</label>
                                         <select name="type" value={form.type} onChange={handleChange} required className="border p-2 w-full rounded">
-                                            <option value="purchase">Purchase</option>
-                                            <option value="sale">Sale</option>
-                                            <option value="return">Return</option>
-                                            <option value="adjustment">Adjustment</option>
+                                            <option value="purchase">{t('purchase')}</option>
+                                            <option value="sale">{t('sale')}</option>
+                                            <option value="return">{t('return')}</option>
+                                            <option value="adjustment">{t('adjustment')}</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block mb-1 text-sm font-medium">Quantity</label>
-                                        <TextInput name="quantity" value={form.quantity} onChange={handleChange} placeholder="Quantity" type="number" min="1" required className="w-full" />
+                                        <label className="block mb-1 text-sm font-medium">{t('quantity')}</label>
+                                        <TextInput name="quantity" value={form.quantity} onChange={handleChange} placeholder={t('quantity')} type="number" min="1" required className="w-full" />
                                     </div>
                                     <div>
-                                        <label className="block mb-1 text-sm font-medium">Note (optional)</label>
-                                        <TextInput name="note" value={form.note} onChange={handleChange} placeholder="Note (optional)" className="w-full" />
+                                        <label className="block mb-1 text-sm font-medium">{t('note')} ({t('optional')})</label>
+                                        <TextInput name="note" value={form.note} onChange={handleChange} placeholder={`${t('note')} (${t('optional')})`} className="w-full" />
                                     </div>
                                     <div className="flex gap-2 justify-end">
-                                        <SecondaryButton type="button" onClick={closeModal}>Cancel</SecondaryButton>
-                                        <PrimaryButton type="submit" disabled={loading}>{loading ? 'Saving...' : 'Add Movement'}</PrimaryButton>
+                                        <SecondaryButton type="button" onClick={closeModal}>{t('cancel')}</SecondaryButton>
+                                        <PrimaryButton type="submit" disabled={loading}>{loading ? t('saving') : t('add_movement')}</PrimaryButton>
                                     </div>
                                 </form>
                             </div>

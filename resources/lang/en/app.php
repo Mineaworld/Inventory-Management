@@ -2,7 +2,7 @@
 
 return [
     // Common
-    'app_name' => 'Stock Management System',
+    'app_name' => 'Stock Management',
     'dashboard' => 'Dashboard',
     'save' => 'Save',
     'cancel' => 'Cancel',
@@ -41,6 +41,8 @@ return [
     'add_product' => 'Add Product',
     'edit_product' => 'Edit Product',
     'low_stock' => 'Low Stock',
+    'in_stock' =>  'In Stock',
+    'no_description' => 'No description',
     
     // Stock Movements
     'stock_in' => 'Stock In',
@@ -50,6 +52,18 @@ return [
     'reference' => 'Reference',
     'add_stock' => 'Add Stock',
     'remove_stock' => 'Remove Stock',
+    'recent_stock_movements' => 'Recent Stock Movements',
+    'add_movement' => 'Add Movement',
+    'date' => 'Date',
+    'product' => 'Product',
+    'select_product' => 'Select Product',
+    'type' => 'Type',
+    'purchase' => 'Purchase',
+    'note' => 'Note',
+    'note_optional' => 'Note (optional)',
+    'cancel' => 'Cancel',
+    'add_stock_movement' => 'Add Stock Movement',
+    'user' => 'User',
     
     // Auth
     'login' => 'Login',
@@ -82,4 +96,25 @@ return [
     'no_stock_available' => 'No stock available',
     'critical' => 'Critical',
     'down_this_period' => 'Down this period',
+    'all' => 'All',
+    'draft' => 'Draft',
+    'archived' => 'Archived',
+    'sort_by' => 'Sort by',
+    'name' => 'Name',
+    'initial_quantity' => 'Initial Quantity',
+    'supplier' => 'Supplier',
+    'add_supplier' => 'Add Supplier',
+    'product_image' => 'Product Image',
+    'my_products' => 'My Products',
+    'phone' => 'Phone',
+    'address' => 'Address',
+    'update_product' => 'Update Product',
+    'edit_supplier' => 'Edit Supplier',
+    'delete_supplier' => 'Delete Supplier',
+    'are_you_sure_delete' => 'Are you sure you want to delete',
+    'this_action_cannot_be_undone' => 'This action cannot be undone.',
+    'select_supplier' => 'Select a supplier',
+    'image' => 'Image',
+    'delete_product' => 'Delete Product',
+    'back' => 'Back',
 ]; 
