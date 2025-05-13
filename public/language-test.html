@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language System Test</title>
+    <style>
+        body {
+            font-family: 'Kantumruy Pro', system-ui, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #3b82f6;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+        .language-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background: #f3f4f6;
+        }
+        button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .translation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .translation-item:nth-child(odd) {
+            background: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Language System Test</h1>
+    
+    <div class="language-switcher">
+        <button onclick="changeLanguage('en')" id="btn-en">English</button>
+        <button onclick="changeLanguage('kh')" id="btn-kh">ភាសាខ្មែរ</button>
+    </div>
+    
+    <div id="status">Loading...</div>
+    
+    <div id="translation-list"></div>
+    
+    <script>
+        // Default translations as a fallback
+        const DEFAULT_TRANSLATIONS = {
+            en: {
+                dashboard: 'Dashboard',
+                products: 'Products',
+                suppliers: 'Suppliers',
+                stock_movements: 'Stock Movements',
+                inventory: 'Inventory',
+                reports: 'Reports',
+                sales_overview: 'Sales Overview',
+                logout: 'Logout',
+                app_name: 'Stock Management',
+                home: 'Home',
+                english: 'English',
+                khmer: 'Khmer',
+                language: 'Language',
+                search: 'Search',
+                no_records: 'No Records Found'
+            },
+            kh: {
+                dashboard: 'ផ្ទាំងគ្រប់គ្រង',
+                products: 'ផលិតផល',
+                suppliers: 'អ្នកផ្គត់ផ្គង់',
+                stock_movements: 'ចលនាស្តុក',
+                inventory: 'សារពើភ័ណ្ឌ',
+                reports: 'របាយការណ៍',
+                sales_overview: 'ទិដ្ឋភាពលក់',
+                logout: 'ចាកចេញ',
+                app_name: 'ប្រព័ន្ធគ្រប់គ្រងស្តុក',
+                home: 'ទំព័រដើម',
+                english: 'អង់គ្លេស',
+                khmer: 'ខ្មែរ',
+                language: 'ភាសា',
+                search: 'ស្វែងរក',
+                no_records: 'មិនមានទិន្នន័យ'
+            }
+        };
+        
+        let currentLang = localStorage.getItem('app_language') || 'en';
+        let translations = DEFAULT_TRANSLATIONS[currentLang];
+        
+        function updateUI() {
+            document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
+            document.getElementById('btn-kh').classList.toggle('active', currentLang === 'kh');
+            
+            const list = document.getElementById('translation-list');
+            list.innerHTML = '';
+            
+            Object.entries(translations).forEach(([key, value]) => {
+                const item = document.createElement('div');
+                item.className = 'translation-item';
+                item.innerHTML = `<strong>${key}:</strong> <span>${value}</span>`;
+                list.appendChild(item);
+            });
+        }
+        
+        async function loadTranslations(lang) {
+            try {
+                document.getElementById('status').innerText = `Loading ${lang} translations...`;
+                const response = await fetch(`/api/translations?lang=${lang}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (Object.keys(data).length > 0) {
+                        translations = data;
+                        document.getElementById('status').innerText = `Loaded ${Object.keys(data).length} translations`;
+                    } else {
+                        translations = DEFAULT_TRANSLATIONS[lang];
+                        document.getElementById('status').innerText = `Using fallback translations`;
+                    }
+                } else {
+                    translations = DEFAULT_TRANSLATIONS[lang];
+                    document.getElementById('status').innerText = `Error loading translations (${response.status}). Using fallback.`;
+                }
+            } catch (error) {
+                translations = DEFAULT_TRANSLATIONS[lang];
+                document.getElementById('status').innerText = `Error: ${error.message}. Using fallback.`;
+            }
+            
+            updateUI();
+        }
+        
+        function changeLanguage(lang) {
+            if (lang === 'en' || lang === 'kh') {
+                currentLang = lang;
+                localStorage.setItem('app_language', lang);
+                document.documentElement.lang = lang === 'en' ? 'en' : 'km';
+                loadTranslations(lang);
+            }
+        }
+        
+        // Initial load
+        changeLanguage(currentLang);
+    </script>
+</body>
+</html> 

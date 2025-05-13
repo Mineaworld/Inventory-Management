@@ -3,15 +3,20 @@ import { Link } from '@inertiajs/react';
 
 export default function GuestLayout({ children }) {
     return (
-        <div className="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0">
-            <div>
+        <div className="flex min-h-screen flex-col items-center bg-gradient-to-br from-gray-100 to-blue-50 pt-6 sm:justify-center sm:pt-0">
+            <div className="mb-2 mt-4 transform transition-all duration-300 hover:scale-110">
                 <Link href="/">
-                    <ApplicationLogo className="h-20 w-20 fill-current text-gray-500" />
+                    <ApplicationLogo className="h-24 w-24 fill-current text-blue-600" />
                 </Link>
             </div>
+            <h1 className="mb-4 text-3xl font-bold text-gray-800">Inventory Management System</h1>
 
-            <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg">
+            <div className="mt-2 w-full max-w-md overflow-hidden rounded-xl bg-white px-8 py-6 shadow-2xl transition-all duration-300 hover:shadow-lg sm:rounded-2xl">
                 {children}
+            </div>
+            
+            <div className="mt-6 text-center text-sm text-gray-600">
+                &copy; {new Date().getFullYear()} Inventory Management System. All rights reserved.
             </div>
         </div>
     );

@@ -10,6 +10,7 @@ import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Toaster } from '@/Components/ui/Toaster';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/Components/ui/button';
 
 export default function StockMovements() {
     const [movements, setMovements] = useState([]);

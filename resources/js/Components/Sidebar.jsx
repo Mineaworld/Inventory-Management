@@ -12,20 +12,22 @@ import {
     XMarkIcon,
 } from '@heroicons/react/24/outline';
 import ThemeToggle from '@/Components/ThemeToggle';
-
-const navLinks = [
-    { name: 'Dashboard', route: 'dashboard', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
-    { name: 'Products', route: 'products.manage', icon: <CubeIcon className="w-5 h-5 mr-2" /> },
-    { name: 'Suppliers', route: 'suppliers.index', icon: <UserCircleIcon className="w-5 h-5 mr-2" /> },
-    { name: 'Stock Movements', route: 'stock-movements.manage', icon: <ArrowsRightLeftIcon className="w-5 h-5 mr-2" /> },
-    { name: 'Inventory Report', route: 'report.inventory', icon: <ChartBarIcon className="w-5 h-5 mr-2" /> },
-    { name: 'Sales Report', route: 'report.sales', icon: <CurrencyDollarIcon className="w-5 h-5 mr-2" /> },
-];
+import { useLanguage } from '@/Context/LanguageContext';
 
 export default function Sidebar({ user, mobileOpen = false, onClose }) {
     const { auth } = usePage().props;
+    const { t } = useLanguage();
     user = user || auth.user;
     const sidebarRef = useRef(null);
+
+    const navLinks = [
+        { name: t('dashboard'), route: 'dashboard', icon: <HomeIcon className="w-5 h-5 mr-2" /> },
+        { name: t('products'), route: 'products.manage', icon: <CubeIcon className="w-5 h-5 mr-2" /> },
+        { name: t('suppliers'), route: 'suppliers.index', icon: <UserCircleIcon className="w-5 h-5 mr-2" /> },
+        { name: t('stock_movements'), route: 'stock-movements.manage', icon: <ArrowsRightLeftIcon className="w-5 h-5 mr-2" /> },
+        { name: t('inventory') + ' ' + t('reports'), route: 'report.inventory', icon: <ChartBarIcon className="w-5 h-5 mr-2" /> },
+        { name: t('sales_overview'), route: 'report.sales', icon: <CurrencyDollarIcon className="w-5 h-5 mr-2" /> },
+    ];
 
     // Trap focus and close on ESC for accessibility
     useEffect(() => {
@@ -65,7 +67,7 @@ export default function Sidebar({ user, mobileOpen = false, onClose }) {
             tabIndex={-1}
         >
             <div className="p-4 text-xl font-extrabold tracking-tight border-b border-muted bg-background/80 dark:bg-background/80 text-foreground dark:text-foreground text-2xl flex items-center justify-between">
-                <span className="text-primary">Inventory Pro</span>
+                <span className="text-primary">{t('app_name')}</span>
                 {/* Close button for mobile */}
                 <button
                     className="md:hidden ml-2 p-1 rounded hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary"
@@ -76,7 +78,7 @@ export default function Sidebar({ user, mobileOpen = false, onClose }) {
                 </button>
             </div>
             <nav className="flex-1 py-4 px-2 flex flex-col">
-                <div className="mb-2 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-widest text-base md:text-lg">Main</div>
+                <div className="mb-2 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-widest text-base md:text-lg">{t('home')}</div>
                 <ul className="space-y-1 flex-1">
                     {navLinks.map(link => (
                         <li key={link.route}>
@@ -103,10 +105,10 @@ export default function Sidebar({ user, mobileOpen = false, onClose }) {
                             method="post"
                             as="button"
                             className="flex items-center justify-center gap-2 text-white bg-red-500 hover:bg-red-600 transition p-2 rounded-xl w-full border border-red-600 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-red-500/30"
-                            title="Logout"
+                            title={t('logout')}
                         >
                             <ArrowLeftOnRectangleIcon className="w-5 h-5" />
-                            <span className="text-sm font-medium">Logout</span>
+                            <span className="text-sm font-medium">{t('logout')}</span>
                         </Link>
                     </div>
                 </div>

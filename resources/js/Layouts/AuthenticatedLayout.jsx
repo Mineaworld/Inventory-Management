@@ -8,8 +8,10 @@ import { useState } from 'react';
 import Sidebar from '@/Components/Sidebar';
 import { UserCircleIcon, Cog6ToothIcon, QuestionMarkCircleIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import ThemeToggle from '@/Components/ThemeToggle';
+import LanguageSwitcher from '@/Components/LanguageSwitcher';
 import * as Avatar from '@radix-ui/react-avatar';
 import axios from 'axios';
+import { useLanguage } from '@/Context/LanguageContext';
 
 export default function AuthenticatedLayout({ user, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
@@ -19,6 +21,7 @@ export default function AuthenticatedLayout({ user, children }) {
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(false);
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+    const { t } = useLanguage();
     let debounceTimeout = null;
 
     const handleSearchChange = (e) => {
@@ -70,7 +73,7 @@ export default function AuthenticatedLayout({ user, children }) {
                     <div className="relative flex-1 max-w-xs">
                         <input
                             type="text"
-                            placeholder="Search..."
+                            placeholder={t('search') + '...'}
                             value={search}
                             onChange={handleSearchChange}
                             onFocus={() => setShowDropdown(!!search)}
@@ -84,12 +87,12 @@ export default function AuthenticatedLayout({ user, children }) {
                                 ) : (
                                     <>
                                         {results.products.length === 0 && results.movements.length === 0 ? (
-                                            <div className="p-4 text-center text-muted-foreground text-sm">No results found.</div>
+                                            <div className="p-4 text-center text-muted-foreground text-sm">{t('no_records')}</div>
                                         ) : (
                                             <>
                                                 {results.products.length > 0 && (
                                                     <div>
-                                                        <div className="px-4 pt-2 pb-1 text-xs font-semibold text-muted-foreground uppercase">Products</div>
+                                                        <div className="px-4 pt-2 pb-1 text-xs font-semibold text-muted-foreground uppercase">{t('products')}</div>
                                                         {results.products.map(product => (
                                                             <Link
                                                                 key={product.id}
@@ -97,14 +100,14 @@ export default function AuthenticatedLayout({ user, children }) {
                                                                 className="block px-4 py-2 hover:bg-muted/50 text-foreground text-sm truncate"
                                                             >
                                                                 <span className="font-medium">{product.name}</span>
-                                                                <span className="ml-2 text-xs text-muted-foreground">Qty: {product.quantity}</span>
+                                                                <span className="ml-2 text-xs text-muted-foreground">{t('quantity')}: {product.quantity}</span>
                                                             </Link>
                                                         ))}
                                                     </div>
                                                 )}
                                                 {results.movements.length > 0 && (
                                                     <div>
-                                                        <div className="px-4 pt-2 pb-1 text-xs font-semibold text-muted-foreground uppercase">Stock Movements</div>
+                                                        <div className="px-4 pt-2 pb-1 text-xs font-semibold text-muted-foreground uppercase">{t('stock_movements')}</div>
                                                         {results.movements.map(movement => (
                                                             <Link
                                                                 key={movement.id}
@@ -113,7 +116,7 @@ export default function AuthenticatedLayout({ user, children }) {
                                                             >
                                                                 <span className="font-medium">{movement.type}</span>
                                                                 <span className="ml-2 text-xs text-muted-foreground">{movement.product?.name}</span>
-                                                                <span className="ml-2 text-xs text-muted-foreground">Qty: {movement.quantity}</span>
+                                                                <span className="ml-2 text-xs text-muted-foreground">{t('quantity')}: {movement.quantity}</span>
                                                             </Link>
                                                         ))}
                                                     </div>
@@ -127,7 +130,8 @@ export default function AuthenticatedLayout({ user, children }) {
                     </div>
                     {/* Welcome message, avatar, and theme toggle on the right */}
                     <div className="flex items-center gap-2 md:gap-4 ml-2 md:ml-0">
-                        <span className="hidden sm:inline text-base text-gray-500 dark:text-gray-300">Welcome, {user.name} ({user.role?.name})</span>
+                        <span className="hidden sm:inline text-base text-gray-500 dark:text-gray-300">{t('home')}, {user.name} ({user.role?.name})</span>
+                        <LanguageSwitcher />
                         <Avatar.Root className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-700 shadow-lg">
                             <Avatar.Fallback className="text-white text-xl font-bold">
                                 {user.name[0]}

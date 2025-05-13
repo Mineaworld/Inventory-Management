@@ -4,19 +4,22 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { PlusIcon, ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '@heroicons/react/24/solid';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/Components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "@/Components/ui/chart";
 import { TrendingUp } from "lucide-react";
+import { useLanguage } from '@/Context/LanguageContext';
+import { Button } from '@/Components/ui/button';
 
 function Badge({ type }) {
+    const { t } = useLanguage();
     const color = type === 'in' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
-    const label = type === 'in' ? 'In' : 'Out';
+    const label = type === 'in' ? t('stock_in') : t('stock_out');
     return <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${color}`}>{label}</span>;
 }
 
@@ -33,51 +36,54 @@ function DeltaBadge({ value, type }) {
 }
 
 function SectionCards({ productCount, lowStockCount, outOfStockCount }) {
+    const { t } = useLanguage();
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-2">
             <StatCard
-                title="Total Products"
-                value={productCount}
+                title={t('total_products')}
+                value={productCount || 0}
                 delta="+4.5%"
                 deltaType="up"
                 subtitle="Trending up this month"
-                secondary="Products in inventory"
+                secondary={t('products')}
             />
             <StatCard
-                title="Low Stock"
-                value={lowStockCount}
+                title={t('low_stock')}
+                value={lowStockCount || 0}
                 delta="-2.1%"
                 deltaType="down"
-                subtitle="Down this period"
-                secondary="Needs restocking"
+                subtitle={t('down_this_period')}
+                secondary={t('needs_restocking')}
             />
             <StatCard
-                title="Out of Stock"
-                value={outOfStockCount}
+                title={t('out_of_stock')}
+                value={outOfStockCount || 0}
                 delta="-1.5%"
                 deltaType="down"
-                subtitle="Critical"
-                secondary="No stock available"
+                subtitle={t('critical')}
+                secondary={t('no_stock_available')}
             />
             <QuickActions />
         </div>
     );
 }
 
-function ModernBarChart({ data }) {
+function ModernBarChart({ data = [] }) {
+    const { t } = useLanguage();
     // Prepare multi-bar data: { name, in: X, out: Y }
-    const chartData = data.map(month => ({
-        name: month.name,
-        in: month.in || 0,
-        out: month.out || 0,
-    }));
+    const chartData = Array.isArray(data) ? data.map(month => ({
+        name: month?.name || '',
+        in: month?.in || 0,
+        out: month?.out || 0,
+    })) : [];
+    
     const chartConfig = {
         in: {
-            label: "In",
+            label: t('stock_in'),
             color: "#3b82f6", // blue-500
         },
         out: {
-            label: "Out",
+            label: t('stock_out'),
             color: "#22c55e", // green-500
         },
     };
@@ -95,7 +101,7 @@ function ModernBarChart({ data }) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Stock Movements</CardTitle>
+                <CardTitle>{t('stock_movements')}</CardTitle>
                 <CardDescription>Last 6 months</CardDescription>
             </CardHeader>
             <CardContent>
@@ -114,8 +120,8 @@ function ModernBarChart({ data }) {
                             labelStyle={{ color: '#18181b', fontWeight: 600 }}
                             itemStyle={{ color: '#18181b' }}
                         />
-                        <Bar dataKey="in" fill={chartConfig.in.color} radius={4} name="In" />
-                        <Bar dataKey="out" fill={chartConfig.out.color} radius={4} name="Out" />
+                        <Bar dataKey="in" fill={chartConfig.in.color} radius={4} name={t('stock_in')} />
+                        <Bar dataKey="out" fill={chartConfig.out.color} radius={4} name={t('stock_out')} />
                     </BarChart>
                 </ChartContainer>
             </CardContent>
@@ -124,35 +130,36 @@ function ModernBarChart({ data }) {
                     Trending up <TrendingUp className="h-4 w-4" />
                 </div>
                 <div className="leading-none text-muted-foreground">
-                    Showing total stock movements for the last 6 months
+                    {t('recent_movements')}
                 </div>
             </CardFooter>
         </Card>
     );
 }
 
-function ModernDataTable({ data }) {
+function ModernDataTable({ data = [] }) {
+    const { t } = useLanguage();
     // Define columns
     const columns = [
         {
-            header: 'Date',
+            header: t('movement_date'),
             accessorKey: 'date',
         },
         {
-            header: 'Product',
+            header: t('product_name'),
             accessorKey: 'product_name',
         },
         {
-            header: 'Type',
+            header: t('movement_type'),
             accessorKey: 'type',
             cell: info => <Badge type={info.getValue()} />,
         },
         {
-            header: 'Quantity',
+            header: t('quantity'),
             accessorKey: 'quantity',
         },
         {
-            header: 'User',
+            header: t('users'),
             accessorKey: 'user_name',
         },
     ];
@@ -164,8 +171,8 @@ function ModernDataTable({ data }) {
     return (
         <Card className="rounded-2xl border border-muted bg-background dark:bg-[#18181b] shadow-lg p-4 mt-3">
             <CardHeader className="pb-1">
-                <CardTitle className="text-sm font-semibold text-foreground">Recent Stock Movements</CardTitle>
-                <p className="text-xs text-muted-foreground mt-0.5">Latest inventory changes in the system.</p>
+                <CardTitle className="text-sm font-semibold text-foreground">{t('recent_movements')}</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">{t('stock_movements')}</p>
             </CardHeader>
             <CardContent className="overflow-x-auto">
                 <table className="min-w-full text-sm border-separate border-spacing-y-1">
@@ -182,7 +189,7 @@ function ModernDataTable({ data }) {
                     </thead>
                     <tbody>
                         {table.getRowModel().rows.length === 0 && (
-                            <tr><td colSpan={columns.length} className="py-4 text-center text-muted-foreground">No recent movements.</td></tr>
+                            <tr><td colSpan={columns.length} className="py-4 text-center text-muted-foreground">{t('no_records')}</td></tr>
                         )}
                         {table.getRowModel().rows.map(row => (
                             <tr key={row.id} className="border border-muted/10 hover:bg-primary/5 transition rounded-lg">
@@ -202,95 +209,142 @@ function ModernDataTable({ data }) {
 
 export default function Dashboard() {
     const { auth } = usePage().props;
-    const user = auth.user;
-    const [productCount, setProductCount] = useState(0);
-    const [lowStockCount, setLowStockCount] = useState(0);
-    const [outOfStockCount, setOutOfStockCount] = useState(0);
+    const { t } = useLanguage();
+    
+    const [productStats, setProductStats] = useState({
+        productCount: 0,
+        lowStockCount: 0,
+        outOfStockCount: 0,
+    });
     const [recentMovements, setRecentMovements] = useState([]);
-    const [chartData, setChartData] = useState([]);
-
+    const [monthlyData, setMonthlyData] = useState([]);
+    
+    const fetchProductStats = async () => {
+        try {
+            const response = await axios.get('/reports/inventory');
+            console.log('Product stats response:', response.data);
+            
+            // Handle different response formats
+            if (Array.isArray(response.data)) {
+                const products = response.data;
+                const stats = {
+                    productCount: products.length,
+                    lowStockCount: products.filter(p => p.low_stock).length,
+                    outOfStockCount: products.filter(p => p.quantity === 0).length
+                };
+                setProductStats(stats);
+            } else if (response.data && typeof response.data === 'object') {
+                // Handle object response with or without stats property
+                if (response.data.stats) {
+                    setProductStats(response.data.stats);
+                } else {
+                    // Try to extract counts from the response object itself
+                    const stats = {
+                        productCount: response.data.productCount || response.data.count || 0,
+                        lowStockCount: response.data.lowStockCount || 0,
+                        outOfStockCount: response.data.outOfStockCount || 0
+                    };
+                    setProductStats(stats);
+                }
+            } else {
+                console.error('Unexpected response format from inventory API:', response.data);
+                setProductStats({
+                    productCount: 0,
+                    lowStockCount: 0,
+                    outOfStockCount: 0
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching product stats:', error);
+            setProductStats({
+                productCount: 0,
+                lowStockCount: 0,
+                outOfStockCount: 0
+            });
+        }
+    };
+    
+    const fetchMovements = async () => {
+        try {
+            const response = await axios.get('/stock-movements');
+            console.log('Movements response:', response.data);
+            
+            // Check if we have a valid response with movements data
+            const movementsData = response.data?.movements || [];
+            
+            if (Array.isArray(movementsData)) {
+                // Prepare recent movements for the table
+                const movements = movementsData.slice(0, 5).map(m => ({
+                    id: m?.id || 'unknown',
+                    date: m?.created_at ? new Date(m.created_at).toLocaleDateString() : '-',
+                    product_name: m?.product?.name || 'Unknown',
+                    type: m?.type || 'unknown',
+                    quantity: m?.quantity || 0,
+                    user_name: m?.user?.name || 'System',
+                }));
+                setRecentMovements(movements);
+                
+                // Prepare monthly data for the chart
+                // Group by month and type
+                const monthlyDataMap = {};
+                movementsData.forEach(m => {
+                    if (m?.created_at) {
+                        const date = new Date(m.created_at);
+                        const month = date.toLocaleString('default', { month: 'short' });
+                        if (!monthlyDataMap[month]) {
+                            monthlyDataMap[month] = { in: 0, out: 0 };
+                        }
+                        if (m?.type && m?.quantity) {
+                            monthlyDataMap[month][m.type] += parseInt(m.quantity) || 0;
+                        }
+                    }
+                });
+                
+                // Convert the map to an array
+                const last6Months = Array.from({ length: 6 }, (_, i) => {
+                    const d = new Date();
+                    d.setMonth(d.getMonth() - i);
+                    return d.toLocaleString('default', { month: 'short' });
+                }).reverse();
+                
+                const chartData = last6Months.map(month => ({
+                    name: month,
+                    in: monthlyDataMap[month]?.in || 0,
+                    out: monthlyDataMap[month]?.out || 0,
+                }));
+                
+                setMonthlyData(chartData);
+            } else {
+                console.error('Unexpected response format from movements API:', response.data);
+                setRecentMovements([]);
+                setMonthlyData([]);
+            }
+        } catch (error) {
+            console.error('Error fetching movements:', error);
+            setRecentMovements([]);
+            setMonthlyData([]);
+        }
+    };
+    
     useEffect(() => {
         fetchProductStats();
         fetchMovements();
     }, []);
-
-    const fetchProductStats = async () => {
-        const res = await axios.get('/reports/inventory');
-        setProductCount(res.data.length);
-        setLowStockCount(res.data.filter(p => p.low_stock).length);
-        setOutOfStockCount(res.data.filter(p => p.quantity === 0).length);
-    };
-
-    const fetchMovements = async () => {
-        const res = await axios.get('/stock-movements');
-        // Table: latest 10 movements
-        const tableData = res.data.slice(0, 10).map(m => ({
-            date: new Date(m.created_at).toLocaleDateString(),
-            product_name: m.product?.name || 'Unknown',
-            type: m.type === 'sale' || m.type === 'out' ? 'out' : 'in',
-            quantity: m.quantity,
-            user_name: m.user?.name || 'Unknown',
-        }));
-        setRecentMovements(tableData);
-
-        // Chart: aggregate by month for last 6 months, split by 'in' and 'out'
-        const now = new Date();
-        const months = [];
-        for (let i = 5; i >= 0; i--) {
-            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            months.push({
-                name: d.toLocaleString('default', { month: 'short' }),
-                year: d.getFullYear(),
-                month: d.getMonth(),
-                in: 0,
-                out: 0,
-            });
-        }
-        res.data.forEach(m => {
-            const d = new Date(m.created_at);
-            const idx = months.findIndex(
-                mon => mon.year === d.getFullYear() && mon.month === d.getMonth()
-            );
-            if (idx !== -1) {
-                if (m.type === 'sale' || m.type === 'out') {
-                    months[idx].out += m.quantity;
-                } else {
-                    months[idx].in += m.quantity;
-                }
-            }
-        });
-        setChartData(months);
-    };
-
+    
     return (
-        <AuthenticatedLayout user={user}>
-            <Head title="Dashboard" />
-            <div className="flex flex-col gap-4 p-4 md:p-6 bg-background min-h-screen">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-2">
-                    <h2 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h2>
-                </div>
-                <SectionCards productCount={productCount} lowStockCount={lowStockCount} outOfStockCount={outOfStockCount} />
-                <div className="flex flex-col lg:flex-row gap-4">
-                    <div className="flex-1 min-w-0">
-                        <ModernBarChart data={chartData} />
-                    </div>
-                    <div className="w-full lg:w-1/3 flex-shrink-0">
-                        <Card className="rounded-2xl border border-muted bg-background dark:bg-[#18181b] shadow-lg p-4 h-full flex flex-col">
-                            <CardHeader>
-                                <CardTitle>Tips & Insights</CardTitle>
-                                <CardDescription>Improve your inventory management</CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex-1 flex flex-col gap-2 text-sm">
-                                <ul className="list-disc pl-5 space-y-2">
-                                    <li>Review low stock items weekly to avoid stockouts.</li>
-                                    <li>Analyze sales trends to optimize reorder points.</li>
-                                    <li>Use barcodes for faster and more accurate stock updates.</li>
-                                    <li>Regularly audit your inventory for discrepancies.</li>
-                                    <li>Leverage reports to identify your best-selling products.</li>
-                                </ul>
-                            </CardContent>
-                        </Card>
-                    </div>
+        <AuthenticatedLayout user={auth.user}>
+            <Head title={t('dashboard')} />
+            <div className="py-4">
+                <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                    {t('dashboard')}
+                </h1>
+                <SectionCards 
+                    productCount={productStats?.productCount} 
+                    lowStockCount={productStats?.lowStockCount} 
+                    outOfStockCount={productStats?.outOfStockCount} 
+                />
+                <div className="rounded-2xl border border-muted bg-background dark:bg-[#18181b] shadow-lg p-4 overflow-hidden">
+                    <ModernBarChart data={monthlyData} />
                 </div>
                 <ModernDataTable data={recentMovements} />
             </div>
@@ -300,44 +354,38 @@ export default function Dashboard() {
 
 function StatCard({ title, value, delta, deltaType, subtitle, secondary }) {
     return (
-        <Card className="rounded-2xl border border-muted bg-background dark:bg-[#18181b] shadow-lg p-4 flex flex-col justify-between min-h-[140px]">
-            <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-medium text-muted-foreground">{title}</span>
-                <DeltaBadge value={delta} type={deltaType} />
+        <div className="rounded-2xl border border-muted bg-background dark:bg-[#18181b] shadow-lg p-4 overflow-hidden">
+            <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400">{title}</h3>
+                {delta && <DeltaBadge value={delta} type={deltaType} />}
             </div>
-            <div className="text-2xl font-bold text-foreground mb-0.5">{value}</div>
-            <div className="text-xs font-semibold text-foreground mb-0.5">{subtitle}</div>
-            <div className="text-xs text-muted-foreground">{secondary}</div>
-        </Card>
+            <div className="mt-2">
+                <div className="text-2xl font-bold text-foreground">{value}</div>
+                <p className="text-xs text-muted-foreground mt-1">{secondary}</p>
+            </div>
+        </div>
     );
 }
 
 function QuickActions() {
+    const { t } = useLanguage();
     return (
-        <Card className="rounded-2xl border border-muted bg-background dark:bg-[#18181b] shadow-lg p-4 flex flex-col items-start justify-center min-h-[200px]">
-            <CardHeader className="pb-1 w-full">
-                <CardTitle className="text-xs font-medium text-left uppercase tracking-wide mb-2 text-foreground">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-2 w-full">
-                <Link
-                    href={route('products.manage')}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-primary text-foreground text-xs font-semibold shadow hover:bg-primary/90 transition focus:outline-none focus:ring-2 focus:ring-primary/40 w-full justify-center"
-                >
-                    <PlusIcon className="w-4 h-4" /> Add Product
+        <div className="rounded-2xl border border-muted bg-background dark:bg-[#18181b] shadow-lg p-4 overflow-hidden flex flex-col justify-between">
+            <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400">{t('actions')}</h3>
+            <div className="mt-2 space-y-2">
+                <Link href={route('products.create')} className="w-full">
+                    <Button className="w-full" variant="default">
+                        <PlusIcon className="w-4 h-4 mr-2" />
+                        <span className="text-sm">{t('add_product')}</span>
+                    </Button>
                 </Link>
-                <Link
-                    href={route('stock-movements.manage')}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-muted text-foreground text-xs font-semibold shadow hover:bg-muted/70 transition focus:outline-none focus:ring-2 focus:ring-primary/40 w-full justify-center"
-                >
-                    <ArrowTrendingUpIcon className="w-4 h-4" /> Manage Stock
+                <Link href={route('stock-movements.manage')} className="w-full">
+                    <Button className="w-full" variant="secondary">
+                        <PlusIcon className="w-4 h-4 mr-2" />
+                        <span className="text-sm">{t('stock_movements')}</span>
+                    </Button>
                 </Link>
-                <Link
-                    href={route('report.inventory')}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-muted text-foreground text-xs font-semibold shadow hover:bg-muted/70 transition focus:outline-none focus:ring-2 focus:ring-primary/40 w-full justify-center"
-                >
-                    <ArrowTrendingDownIcon className="w-4 h-4" /> View Reports
-                </Link>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }
