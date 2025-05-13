@@ -25,7 +25,7 @@ export default function Sidebar({ user, mobileOpen = false, onClose }) {
         { name: t('products'), route: 'products.manage', icon: <CubeIcon className="w-5 h-5 mr-2" /> },
         { name: t('suppliers'), route: 'suppliers.index', icon: <UserCircleIcon className="w-5 h-5 mr-2" /> },
         { name: t('stock_movements'), route: 'stock-movements.manage', icon: <ArrowsRightLeftIcon className="w-5 h-5 mr-2" /> },
-        { name: t('inventory') + ' ' + t('reports'), route: 'report.inventory', icon: <ChartBarIcon className="w-5 h-5 mr-2" /> },
+        { name: t('inventory_report'), route: 'report.inventory', icon: <ChartBarIcon className="w-5 h-5 mr-2" /> },
         { name: t('sales_overview'), route: 'report.sales', icon: <CurrencyDollarIcon className="w-5 h-5 mr-2" /> },
     ];
 

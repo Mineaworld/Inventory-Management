@@ -4,12 +4,14 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/Components/ui/card';
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, usePage } from '@inertiajs/react';
+import { useLanguage } from '@/Context/LanguageContext';
 
 export default function InventoryReport() {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState('');
     const { auth } = usePage().props;
     const user = auth.user;
+    const { t } = useLanguage();
 
     useEffect(() => {
         fetchInventory();
@@ -26,14 +28,14 @@ export default function InventoryReport() {
 
     // Export to CSV
     const exportCSV = () => {
-        const header = ['Product', 'Quantity', 'Low Stock?'];
-        const rows = filteredProducts.map(p => [p.name, p.quantity, p.low_stock ? 'Yes' : 'No']);
+        const header = [t('product'), t('quantity'), t('low_stock') + '?'];
+        const rows = filteredProducts.map(p => [p.name, p.quantity, p.low_stock ? t('yes') : t('no')]);
         let csv = [header, ...rows].map(row => row.join(',')).join('\n');
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'inventory_report.csv';
+        a.download = t('inventory_report') + '.csv';
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -45,21 +47,21 @@ export default function InventoryReport() {
 
     return (
         <AuthenticatedLayout user={user}>
-            <Head title="Inventory Report" />
+            <Head title={t('inventory_report')} />
             <div className="max-w-5xl mx-auto py-8 px-2 md:px-0">
                 <Card className="dark:bg-zinc-900 dark:text-gray-100">
                     <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border-b dark:border-zinc-700">
-                        <CardTitle className="text-2xl font-bold dark:text-white">Inventory Report</CardTitle>
+                        <CardTitle className="text-2xl font-bold dark:text-white">{t('inventory_report')}</CardTitle>
                         <div className="flex gap-2 mt-2 md:mt-0">
-                            <PrimaryButton onClick={exportCSV}>Export CSV</PrimaryButton>
-                            <PrimaryButton onClick={printReport}>Print</PrimaryButton>
+                            <PrimaryButton onClick={exportCSV}>{t('export_csv') || 'Export CSV'}</PrimaryButton>
+                            <PrimaryButton onClick={printReport}>{t('print') || 'Print'}</PrimaryButton>
                         </div>
                     </CardHeader>
                     <CardContent>
                         <div className="mb-4 flex flex-col md:flex-row md:items-center gap-2">
                             <input
                                 type="text"
-                                placeholder="Search product..."
+                                placeholder={t('search_product') || 'Search product...'}
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                                 className="px-3 py-2 rounded-lg border border-muted bg-background dark:bg-zinc-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 w-full md:w-64"
@@ -69,14 +71,14 @@ export default function InventoryReport() {
                             <table className="w-full text-sm border-separate border-spacing-y-1 min-w-[500px]">
                                 <thead className="sticky top-0 bg-background dark:bg-zinc-800 z-10">
                                     <tr>
-                                        <th className="py-2 px-3 text-left font-semibold text-muted-foreground dark:text-gray-200 border-b border-muted dark:border-zinc-700">Product</th>
-                                        <th className="py-2 px-3 text-left font-semibold text-muted-foreground dark:text-gray-200 border-b border-muted dark:border-zinc-700">Quantity</th>
-                                        <th className="py-2 px-3 text-left font-semibold text-muted-foreground dark:text-gray-200 border-b border-muted dark:border-zinc-700">Status</th>
+                                        <th className="py-2 px-3 text-left font-semibold text-muted-foreground dark:text-gray-200 border-b border-muted dark:border-zinc-700">{t('product')}</th>
+                                        <th className="py-2 px-3 text-left font-semibold text-muted-foreground dark:text-gray-200 border-b border-muted dark:border-zinc-700">{t('quantity')}</th>
+                                        <th className="py-2 px-3 text-left font-semibold text-muted-foreground dark:text-gray-200 border-b border-muted dark:border-zinc-700">{t('status')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filteredProducts.length === 0 && (
-                                        <tr><td colSpan={3} className="py-4 text-center text-muted-foreground dark:text-gray-400">No products found.</td></tr>
+                                        <tr><td colSpan={3} className="py-4 text-center text-muted-foreground dark:text-gray-400">{t('no_products_found') || 'No products found.'}</td></tr>
                                     )}
                                     {filteredProducts.map((product, idx) => (
                                         <tr key={product.id} className={
@@ -91,11 +93,11 @@ export default function InventoryReport() {
                                             <td className="py-2 px-3 border-b border-muted dark:border-zinc-700 dark:text-gray-100">{product.quantity}</td>
                                             <td className="py-2 px-3 border-b border-muted dark:border-zinc-700">
                                                 {product.quantity === 0 ? (
-                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200">Out of Stock</span>
+                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200">{t('out_of_stock')}</span>
                                                 ) : product.low_stock ? (
-                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-200 dark:bg-yellow-700 text-yellow-900 dark:text-yellow-100">Low Stock</span>
+                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-200 dark:bg-yellow-700 text-yellow-900 dark:text-yellow-100">{t('low_stock')}</span>
                                                 ) : (
-                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-100">In Stock</span>
+                                                    <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-100">{t('in_stock')}</span>
                                                 )}
                                             </td>
                                         </tr>
