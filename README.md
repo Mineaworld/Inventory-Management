@@ -1,17 +1,18 @@
 # Stock Management System
 
-A modern, full-stack inventory and stock management system built with React, Laravel, and Inertia.js. This application enables businesses to efficiently manage products, suppliers, stock movements, and inventory levels with a user-friendly interface and robust backend.
+A robust, full-stack inventory and stock management platform designed for modern businesses. Built with React, Laravel, and Inertia.js, this system delivers a seamless, bilingual (English/Khmer) experience for managing products, suppliers, and stock movements with real-time updates and a clean, responsive UI.
 
 ---
 
 ## Table of Contents
 
 - [Features](#features)
+- [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
+- [Bilingual Support](#bilingual-support)
 - [Environment Variables](#environment-variables)
 - [Database Migrations](#database-migrations)
-- [Usage](#usage)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
@@ -21,24 +22,34 @@ A modern, full-stack inventory and stock management system built with React, Lar
 
 ## Features
 
-- User authentication and role-based access control (Admin, Manager, Staff)
-- Product CRUD (Create, Read, Update, Delete) with image upload and supplier assignment
-- Supplier management: CRUD, assign suppliers to products, prevent deletion if linked to products, search, and improved UX (back button, sidebar integration)
-- Real-time stock movement tracking (purchases, sales, adjustments, returns)
-- Product table with supplier column and real-time updates after add/edit/delete
-- Search, filter, and sort products
-- Responsive and accessible UI (Tailwind, modern layout, mobile-friendly)
-- Toast notifications for user feedback
-- Secure file uploads and data validation
+- **User Authentication & RBAC:** Secure login with role-based access (Admin, Manager, Staff).
+- **Product Management:** Full CRUD, image uploads, supplier assignment, and real-time table updates.
+- **Supplier Management:** CRUD, assignment to products, deletion protection, and advanced search.
+- **Stock Movements:** Track purchases, sales, returns, and adjustments with audit trails.
+- **Bilingual UI:** Seamless English/Khmer switching, persisted across sessions.
+- **Responsive Design:** Mobile-first, accessible, and modern UI (Tailwind, Shadcn, Radix).
+- **Notifications:** Toasts and feedback for all major actions.
+- **API-Driven:** Clean separation of concerns, RESTful endpoints, and Inertia.js for SPA-like UX.
+- **Extensible:** Modular React components, context providers, and scalable backend structure.
+- **Testing:** Comprehensive backend feature and auth tests.
+
+---
+
+## Architecture
+
+- **Frontend:** React (with Inertia.js), modular components (`resources/js/Components`), context providers for language and theme, and page-based routing (`resources/js/Pages`).
+- **Backend:** Laravel 12+, RESTful controllers, service-based translation API, and robust Eloquent models.
+- **Database:** MySQL (or compatible), with migrations and seeders.
+- **Bilingual Support:** Language files in `resources/lang/en` and `resources/lang/kh`, with a dynamic translation API.
 
 ---
 
 ## Tech Stack
 
-- **Frontend:** React, Inertia.js, Tailwind CSS, Shadcn UI, Radix UI, Heroicons
-- **Backend:** Laravel (PHP 8.2+)
-- **Database:** MySQL (or compatible)
-- **Other:** Axios, Vite, Laravel Sanctum, Ziggy
+- **Frontend:** React 18, Inertia.js, Tailwind CSS, Shadcn UI, Radix UI, Heroicons, Vite
+- **Backend:** Laravel 12 (PHP 8.2+), Inertia Laravel, Sanctum, Ziggy
+- **Other:** Axios, Chart.js, React Table, Lucide, Country/Flag icons
+- **Dev Tools:** Composer, npm/yarn, PHPUnit, Laravel Pint, Vite
 
 ---
 
@@ -46,64 +57,63 @@ A modern, full-stack inventory and stock management system built with React, Lar
 
 ### Prerequisites
 
-- Node.js (v16+)
+- Node.js v16+
 - npm or yarn
-- PHP (v8.2+)
+- PHP 8.2+
 - Composer
-- MySQL or compatible database
+- MySQL (or compatible)
 
 ### Installation
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/stock-management-system.git
-   cd stock-management-system
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/your-username/stock-management-system.git
+cd stock-management-system
 
-2. **Install backend dependencies:**
-   ```bash
-   composer install
-   ```
+# Install backend dependencies
+composer install
 
-3. **Install frontend dependencies:**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+# Install frontend dependencies
+npm install
+# or
+yarn install
 
-4. **Copy and configure environment files:**
-   ```bash
-   cp .env.example .env
-   # Edit .env to match your local setup (DB, mail, etc.)
-   ```
+# Copy and configure environment
+cp .env.example .env
+# Edit .env for DB, mail, etc.
 
-5. **Generate application key:**
-   ```bash
-   php artisan key:generate
-   ```
+# Generate application key
+php artisan key:generate
 
-6. **Run database migrations:**
-   ```bash
-   php artisan migrate
-   ```
+# Run database migrations
+php artisan migrate
 
-7. **Start the development servers:**
-   ```bash
-   # In one terminal
-   php artisan serve
+# Start development servers
+php artisan serve
+# In a separate terminal
+npm run dev
+# or
+yarn dev
+```
 
-   # In another terminal
-   npm run dev
-   # or
-   yarn dev
-   ```
+---
+
+## Bilingual Support
+
+- **Languages:** English and Khmer, with easy toggling via the UI.
+- **Persistence:** Language preference is saved across sessions.
+- **Implementation:** 
+  - Language files: `resources/lang/en/app.php`, `resources/lang/kh/app.php`
+  - Context provider: `resources/js/Context/LanguageContext.jsx`
+  - Language switcher: `resources/js/Components/LanguageSwitcher.jsx`
+  - Backend API: `/api/translations?lang={en|kh}` (see `TranslationController.php`)
+- **Usage:** Use the `t()` function from the language context in React components for all user-facing strings.
 
 ---
 
 ## Environment Variables
 
-Ensure the following variables are set in your `.env` file:
+Ensure your `.env` includes:
 
 - `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
 - `APP_URL`
@@ -113,67 +123,57 @@ Ensure the following variables are set in your `.env` file:
 
 ## Database Migrations
 
-Run all migrations with:
 ```bash
-php artisan migrate
+php artisan migrate         # Run all migrations
+php artisan migrate:rollback # Rollback last batch
 ```
-
-To rollback:
-```bash
-php artisan migrate:rollback
-```
-
----
-
-## Usage
-
-- Log in as an admin to manage products, suppliers, and stock.
-- **Products:** Add, edit, or delete products. Assign a supplier to each product. Upload images.
-- **Suppliers:** Add, edit, or delete suppliers. Cannot delete a supplier if linked to products. Use the back button for easy navigation.
-- **Stock Movements:** Track purchases, sales, returns, and adjustments.
-- **Search and filter:** Quickly find products or suppliers.
-- **Real-time updates:** Product table updates instantly after changes.
-- **Modern UI:** Sidebar, topbar, and mobile-friendly design.
 
 ---
 
 ## Testing
 
-To run backend tests:
+### Backend
+
 ```bash
 php artisan test
 ```
+- Feature and unit tests are located in `tests/Feature` and `tests/Unit`.
+- Auth, profile, and registration flows are covered.
 
-To run frontend tests (if available):
-```bash
-npm run test
-# or
-yarn test
-```
+### Frontend
+
+> _No automated frontend tests are currently configured. Add your preferred framework (e.g., Jest, React Testing Library) as needed._
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please open issues or submit pull requests for any improvements or bug fixes.
+Contributions are welcome! Please:
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/YourFeature`)
+2. Create a feature branch (`git checkout -b feature/YourFeature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin feature/YourFeature`)
+4. Push to your branch (`git push origin feature/YourFeature`)
 5. Open a pull request
 
 ---
 
 ## License
 
-This project is open-source and available under the [MIT License](LICENSE).
+This project is open-source and available under the MIT License.
 
 ---
 
 ## Contact
 
-For questions, suggestions, or support, please contact:
+For questions, suggestions, or support:
 
 - **Minea** – [minea.dyy@gmail.com](mailto:minea.dyy@gmail.com)
 - [GitHub Issues](https://github.com/Mineaworld/Inventory-Management/issues)
+
+---
+
+**Pro tips:**
+- Use the language switcher in the sidebar for instant translation.
+- The system is designed for extensibility—add new modules or languages with minimal friction.
+- For production, configure caching, queues, and storage according to Laravel best practices.
