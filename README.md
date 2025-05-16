@@ -1,6 +1,7 @@
 # Stock Management System
 
-A robust, full-stack inventory and stock management platform designed for modern businesses. Built with React, Laravel, and Inertia.js, this system delivers a seamless, bilingual (English/Khmer) experience for managing products, suppliers, and stock movements with real-time updates and a clean, responsive UI.
+A modern full-stack inventory and stock management platform designed for SMB (Small to Medium-sized Business
+). Built with React, Laravel, and Inertia.js, this system delivers a seamless, bilingual (English/Khmer) experience for managing products, suppliers, and stock movements with real-time updates and a clean, responsive UI.
 
 ---
 

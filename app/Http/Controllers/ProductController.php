@@ -14,9 +14,10 @@ class ProductController extends Controller
     public function index()
     {
         // All authenticated users can view products
-        $products = Product::with('supplier:id,name')->get()->map(function($product) {
+        $products = Product::with(['supplier:id,name', 'category:id,name'])->get()->map(function($product) {
             $arr = $product->toArray();
             $arr['supplier_name'] = $product->supplier ? $product->supplier->name : null;
+            $arr['category_name'] = $product->category ? $product->category->name : null;
             return $arr;
         });
         return response()->json($products);
@@ -85,6 +86,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'supplier_id' => 'required|exists:suppliers,id',
+            'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         if ($request->hasFile('image')) {

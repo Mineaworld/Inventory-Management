@@ -13,7 +13,9 @@ import * as Avatar from '@radix-ui/react-avatar';
 import axios from 'axios';
 import { useLanguage } from '@/Context/LanguageContext';
 
-export default function AuthenticatedLayout({ user, children }) {
+export default function AuthenticatedLayout({ user: propUser, children }) {
+    const { auth } = usePage().props;
+    const user = propUser || (auth && auth.user) || {};
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
     const [search, setSearch] = useState('');
@@ -130,11 +132,11 @@ export default function AuthenticatedLayout({ user, children }) {
                     </div>
                     {/* Welcome message, avatar, and theme toggle on the right */}
                     <div className="flex items-center gap-2 md:gap-4 ml-2 md:ml-0">
-                        <span className="hidden sm:inline text-base text-gray-500 dark:text-gray-300">{t('home')}, {user.name} ({user.role?.name})</span>
+                        <span className="hidden sm:inline text-base text-gray-500 dark:text-gray-300">{t('home')}, {user?.name} ({user?.role?.name})</span>
                         <LanguageSwitcher />
                         <Avatar.Root className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-700 shadow-lg">
                             <Avatar.Fallback className="text-white text-xl font-bold">
-                                {user.name[0]}
+                                {user?.name ? user.name[0] : '?'}
                             </Avatar.Fallback>
                         </Avatar.Root>
                         <ThemeToggle />

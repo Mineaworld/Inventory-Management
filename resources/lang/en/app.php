@@ -43,6 +43,8 @@ return [
     'low_stock' => 'Low Stock',
     'in_stock' =>  'In Stock',
     'no_description' => 'No description',
+    'product_list' => 'Product List',
+    'select_category' => 'Select Category',
     
     // Stock Movements
     'stock_in' => 'Stock In',

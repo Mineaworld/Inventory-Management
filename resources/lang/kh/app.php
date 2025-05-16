@@ -43,6 +43,9 @@ return [
     'low_stock' => 'ស្តុកទាប',
     'in_stock' => 'ស្តុក',
     'no_description' => 'មិនមានពិពណ៌នា',
+    'product_list' => 'បញ្ជីផលិតផល',
+    'select_category' => 'ជ្រើសរើសប្រភេទ',
+    'update' => 'ធ្វើបច្ចុប្បន្នភាព',
     
     // Stock Movements
     'stock_in' => 'ស្តុកចូល',

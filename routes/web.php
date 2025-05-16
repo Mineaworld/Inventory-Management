@@ -8,6 +8,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TranslationController;
 use App\Models\Supplier;
+use Illuminate\Support\Facades\Auth;
 
 // Landing page (welcome screen)
 Route::get('/', function () {
@@ -33,6 +34,24 @@ Route::middleware('auth')->group(function () {
 
     // Product resource routes (CRUD)
     Route::resource('products', \App\Http\Controllers\ProductController::class);
+
+    // Category resource routes (CRUD)
+    Route::get('/categories', function () {
+        $user = Auth::user()?->load('role');
+        return Inertia::render('Category', [
+            'auth' => [
+                'user' => $user,
+            ],
+        ]);
+    })->name('categories.index');
+
+    // API resource routes for categories (for Axios/fetch)
+    Route::prefix('api')->group(function () {
+        Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index']);
+        Route::post('/categories', [\App\Http\Controllers\CategoryController::class, 'store']);
+        Route::put('/categories/{category}', [\App\Http\Controllers\CategoryController::class, 'update']);
+        Route::delete('/categories/{category}', [\App\Http\Controllers\CategoryController::class, 'destroy']);
+    });
 
     // Custom page to manage products (shows all suppliers)
     Route::get('/manage-products', function () {
