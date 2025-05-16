@@ -148,7 +148,12 @@ export default function Category() {
                                 filteredCategories.map((cat) => (
                                     <tr key={cat.id} className="border-b border-gray-100 dark:border-zinc-800">
                                         <td className="px-4 py-2 font-medium">{cat.name}</td>
-                                        <td className="px-4 py-2">{cat.description}</td>
+                                        <td className="px-4 py-2">
+                                            {cat.description && cat.description.trim() !== ''
+                                                ? cat.description
+                                                : <span className="italic text-gray-400">No description</span>
+                                            }
+                                        </td>
                                         <td className="px-4 py-2 text-right space-x-2">
                                             <SecondaryButton onClick={() => openEditModal(cat)}>Edit</SecondaryButton>
                                             <DangerButton onClick={() => openDeleteModal(cat)}>Delete</DangerButton>
