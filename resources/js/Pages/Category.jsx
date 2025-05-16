@@ -166,9 +166,9 @@ export default function Category() {
                 )}
             </div>
             {/* Add Modal */}
-            <Modal show={showAddModal} onClose={() => setShowAddModal(false)}>
-                <form onSubmit={handleAdd} className="p-6">
-                    <h2 className="text-lg font-bold mb-4">Add Category</h2>
+            <Modal show={showAddModal} onClose={() => setShowAddModal(false)} maxWidth="xs">
+                <form onSubmit={handleAdd} className="p-4 text-sm w-full max-w-xs mx-auto rounded-xl shadow-lg bg-white dark:bg-zinc-900">
+                    <h2 className="text-base font-semibold mb-2">Add Category</h2>
                     <InputLabel htmlFor="name" value="Name" />
                     <TextInput id="name" name="name" value={form.name} onChange={handleInputChange} className="mt-1 block w-full" required autoFocus />
                     <InputError message={errors.name} className="mt-1" />
@@ -182,9 +182,9 @@ export default function Category() {
                 </form>
             </Modal>
             {/* Edit Modal */}
-            <Modal show={showEditModal} onClose={() => setShowEditModal(false)}>
-                <form onSubmit={handleEdit} className="p-6">
-                    <h2 className="text-lg font-bold mb-4">Edit Category</h2>
+            <Modal show={showEditModal} onClose={() => setShowEditModal(false)} maxWidth="xs">
+                <form onSubmit={handleEdit} className="p-4 text-sm w-full max-w-xs mx-auto rounded-xl shadow-lg bg-white dark:bg-zinc-900">
+                    <h2 className="text-base font-semibold mb-2">Edit Category</h2>
                     <InputLabel htmlFor="name" value="Name" />
                     <TextInput id="name" name="name" value={form.name} onChange={handleInputChange} className="mt-1 block w-full" required autoFocus />
                     <InputError message={errors.name} className="mt-1" />
