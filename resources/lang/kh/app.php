@@ -132,4 +132,12 @@ return [
     'best_seller' => 'លក់ល្អបំផុត',
     'sales_by_product' => 'លក់តាមផលិតផល',
     'loading' => 'កំពុងផ្ទុក...',
+    'no_products_found' => 'មិនមានផលិតផលទេ',
+    'no_suppliers_found' => 'មិនមានអ្នកផ្គត់ផ្គង់ទេ',
+    'no_customers_found' => 'មិនមានអតិថិជនទេ',
+    'no_movements_found' => 'មិនមានចលនាទេ',
+    'no_users_found' => 'មិនមានអ្នកប្រើប្រាស់ទេ',
+    'no_categories_found' => 'មិនមានប្រភេទទេ',
+    'no_permission' => 'មិនមានសកម្មភាពទេ',
+    'only_admins_can_add_categories' => 'ទាល់តែ Admin ទើបអាចបង្កើតប្រភេទបាន',
 ];

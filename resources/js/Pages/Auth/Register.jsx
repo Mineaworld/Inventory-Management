@@ -4,6 +4,7 @@ import { Button } from '@/Components/ui/button';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -12,12 +13,18 @@ export default function Register() {
         password: '',
         password_confirmation: '',
     });
+    const { toast } = useToast();
 
     const submit = (e) => {
         e.preventDefault();
 
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
+            onError: (errors) => {
+                if (errors.email) {
+                    toast(<div><b>Error</b><div>{errors.email}</div></div>);
+                }
+            },
         });
     };
 

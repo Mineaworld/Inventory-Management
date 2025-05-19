@@ -7,6 +7,7 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import { useLanguage } from '@/Context/LanguageContext';
 import SecondaryButton from '@/Components/SecondaryButton';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Edit({ supplier }) {
     const { auth } = usePage().props;
@@ -17,10 +18,17 @@ export default function Edit({ supplier }) {
         address: supplier.address || '',
     });
     const { t } = useLanguage();
+    const { toast } = useToast();
 
     const submit = (e) => {
         e.preventDefault();
-        put(route('suppliers.update', supplier.id));
+        put(route('suppliers.update', supplier.id), {
+            onError: (errors) => {
+                if (errors.name) {
+                    toast(<div><b>Error</b><div>{errors.name}</div></div>);
+                }
+            },
+        });
     };
 
     return (

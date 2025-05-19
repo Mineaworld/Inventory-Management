@@ -7,6 +7,7 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import SecondaryButton from '@/Components/SecondaryButton';
 import { useLanguage } from '@/Context/LanguageContext';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Create() {
     const { auth } = usePage().props;
@@ -17,10 +18,17 @@ export default function Create() {
         address: '',
     });
     const { t } = useLanguage();
+    const { toast } = useToast();
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('suppliers.store'));
+        post(route('suppliers.store'), {
+            onError: (errors) => {
+                if (errors.name) {
+                    toast(<div><b>Error</b><div>{errors.name}</div></div>);
+                }
+            },
+        });
     };
 
     return (

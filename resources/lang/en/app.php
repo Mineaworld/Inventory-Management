@@ -129,4 +129,12 @@ return [
     'best_seller' => 'Best Seller',
     'sales_by_product' => 'Sales by Product',
     'loading' => 'Loading...',
+    'no_products_found' => 'No products found',
+    'no_suppliers_found' => 'No suppliers found',
+    'no_customers_found' => 'No customers found',
+    'no_movements_found' => 'No movements found',
+    'no_users_found' => 'No users found',
+    'no_categories_found' => 'No categories found',
+    'no_permission' => 'No permission',
+    'only_admins_can_add_categories' => 'Only admins can add categories',
 ]; 

@@ -8,6 +8,8 @@ import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { useToast } from '@/hooks/use-toast';
+import { usePage } from '@inertiajs/react';
 
 export default function Category() {
     const [categories, setCategories] = useState([]);
@@ -20,6 +22,10 @@ export default function Category() {
     const [errors, setErrors] = useState({});
     const [notification, setNotification] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const { toast } = useToast();
+    const { auth } = usePage().props;
+    const user = auth && auth.user;
+    const isAdmin = user && user.role && user.role.name === 'Admin';
 
     const fetchCategories = async () => {
         setLoading(true);
@@ -69,8 +75,13 @@ export default function Category() {
         } catch (err) {
             if (err.response && err.response.data && err.response.data.errors) {
                 setErrors(err.response.data.errors);
+                if (err.response.data.errors.name) {
+                    toast(<div><b>Error</b><div>{err.response.data.errors.name}</div></div>);
+                } else {
+                    toast(<div><b>Error</b><div>Failed to add category.</div></div>);
+                }
             } else {
-                setNotification({ type: 'error', message: 'Failed to add category.' });
+                toast(<div><b>Error</b><div>Failed to add category.</div></div>);
             }
         }
     };
@@ -86,8 +97,13 @@ export default function Category() {
         } catch (err) {
             if (err.response && err.response.data && err.response.data.errors) {
                 setErrors(err.response.data.errors);
+                if (err.response.data.errors.name) {
+                    toast(<div><b>Error</b><div>{err.response.data.errors.name}</div></div>);
+                } else {
+                    toast(<div><b>Error</b><div>Failed to update category.</div></div>);
+                }
             } else {
-                setNotification({ type: 'error', message: 'Failed to update category.' });
+                toast(<div><b>Error</b><div>Failed to update category.</div></div>);
             }
         }
     };
@@ -113,7 +129,11 @@ export default function Category() {
         <div className="py-8">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Categories</h1>
-                <PrimaryButton onClick={openAddModal}>Add Category</PrimaryButton>
+                {isAdmin ? (
+                    <PrimaryButton onClick={openAddModal}>Add Category</PrimaryButton>
+                ) : (
+                    <span className="text-sm text-gray-400">Only admins can add categories.</span>
+                )}
             </div>
             <div className="mb-4 flex items-center gap-2">
                 <input
@@ -155,8 +175,14 @@ export default function Category() {
                                             }
                                         </td>
                                         <td className="px-4 py-2 text-right space-x-2">
-                                            <SecondaryButton onClick={() => openEditModal(cat)}>Edit</SecondaryButton>
-                                            <DangerButton onClick={() => openDeleteModal(cat)}>Delete</DangerButton>
+                                            {isAdmin ? (
+                                                <>
+                                                    <SecondaryButton onClick={() => openEditModal(cat)}>Edit</SecondaryButton>
+                                                    <DangerButton onClick={() => openDeleteModal(cat)}>Delete</DangerButton>
+                                                </>
+                                            ) : (
+                                                <span className="text-xs text-gray-400">No permission</span>
+                                            )}
                                         </td>
                                     </tr>
                                 ))
@@ -167,46 +193,58 @@ export default function Category() {
             </div>
             {/* Add Modal */}
             <Modal show={showAddModal} onClose={() => setShowAddModal(false)} maxWidth="xs">
-                <form onSubmit={handleAdd} className="p-4 text-sm w-full max-w-xs mx-auto rounded-xl shadow-lg bg-white dark:bg-zinc-900">
-                    <h2 className="text-base font-semibold mb-2">Add Category</h2>
-                    <InputLabel htmlFor="name" value="Name" />
-                    <TextInput id="name" name="name" value={form.name} onChange={handleInputChange} className="mt-1 block w-full" required autoFocus />
-                    <InputError message={errors.name} className="mt-1" />
-                    <InputLabel htmlFor="description" value="Description" className="mt-4" />
-                    <TextInput id="description" name="description" value={form.description} onChange={handleInputChange} className="mt-1 block w-full" />
-                    <InputError message={errors.description} className="mt-1" />
-                    <div className="mt-6 flex justify-end gap-2">
-                        <SecondaryButton type="button" onClick={() => setShowAddModal(false)}>Cancel</SecondaryButton>
-                        <PrimaryButton type="submit">Add</PrimaryButton>
-                    </div>
-                </form>
+                {isAdmin ? (
+                    <form onSubmit={handleAdd} className="p-4 text-sm w-full max-w-xs mx-auto rounded-xl shadow-lg bg-white dark:bg-zinc-900">
+                        <h2 className="text-base font-semibold mb-2">Add Category</h2>
+                        <InputLabel htmlFor="name" value="Name" />
+                        <TextInput id="name" name="name" value={form.name} onChange={handleInputChange} className="mt-1 block w-full" required autoFocus />
+                        <InputError message={errors.name} className="mt-1" />
+                        <InputLabel htmlFor="description" value="Description" className="mt-4" />
+                        <TextInput id="description" name="description" value={form.description} onChange={handleInputChange} className="mt-1 block w-full" />
+                        <InputError message={errors.description} className="mt-1" />
+                        <div className="mt-6 flex justify-end gap-2">
+                            <SecondaryButton type="button" onClick={() => setShowAddModal(false)}>Cancel</SecondaryButton>
+                            <PrimaryButton type="submit">Add</PrimaryButton>
+                        </div>
+                    </form>
+                ) : (
+                    <div className="p-4 text-center text-gray-400">Only admins can add categories.</div>
+                )}
             </Modal>
             {/* Edit Modal */}
             <Modal show={showEditModal} onClose={() => setShowEditModal(false)} maxWidth="xs">
-                <form onSubmit={handleEdit} className="p-4 text-sm w-full max-w-xs mx-auto rounded-xl shadow-lg bg-white dark:bg-zinc-900">
-                    <h2 className="text-base font-semibold mb-2">Edit Category</h2>
-                    <InputLabel htmlFor="name" value="Name" />
-                    <TextInput id="name" name="name" value={form.name} onChange={handleInputChange} className="mt-1 block w-full" required autoFocus />
-                    <InputError message={errors.name} className="mt-1" />
-                    <InputLabel htmlFor="description" value="Description" className="mt-4" />
-                    <TextInput id="description" name="description" value={form.description} onChange={handleInputChange} className="mt-1 block w-full" />
-                    <InputError message={errors.description} className="mt-1" />
-                    <div className="mt-6 flex justify-end gap-2">
-                        <SecondaryButton type="button" onClick={() => setShowEditModal(false)}>Cancel</SecondaryButton>
-                        <PrimaryButton type="submit">Save</PrimaryButton>
-                    </div>
-                </form>
+                {isAdmin ? (
+                    <form onSubmit={handleEdit} className="p-4 text-sm w-full max-w-xs mx-auto rounded-xl shadow-lg bg-white dark:bg-zinc-900">
+                        <h2 className="text-base font-semibold mb-2">Edit Category</h2>
+                        <InputLabel htmlFor="name" value="Name" />
+                        <TextInput id="name" name="name" value={form.name} onChange={handleInputChange} className="mt-1 block w-full" required autoFocus />
+                        <InputError message={errors.name} className="mt-1" />
+                        <InputLabel htmlFor="description" value="Description" className="mt-4" />
+                        <TextInput id="description" name="description" value={form.description} onChange={handleInputChange} className="mt-1 block w-full" />
+                        <InputError message={errors.description} className="mt-1" />
+                        <div className="mt-6 flex justify-end gap-2">
+                            <SecondaryButton type="button" onClick={() => setShowEditModal(false)}>Cancel</SecondaryButton>
+                            <PrimaryButton type="submit">Save</PrimaryButton>
+                        </div>
+                    </form>
+                ) : (
+                    <div className="p-4 text-center text-gray-400">Only admins can edit categories.</div>
+                )}
             </Modal>
             {/* Delete Modal */}
             <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)} maxWidth="sm">
-                <div className="p-6">
-                    <h2 className="text-lg font-bold mb-4">Delete Category</h2>
-                    <p>Are you sure you want to delete <span className="font-semibold">{selectedCategory?.name}</span>?</p>
-                    <div className="mt-6 flex justify-end gap-2">
-                        <SecondaryButton type="button" onClick={() => setShowDeleteModal(false)}>Cancel</SecondaryButton>
-                        <DangerButton type="button" onClick={handleDelete}>Delete</DangerButton>
+                {isAdmin ? (
+                    <div className="p-6">
+                        <h2 className="text-lg font-bold mb-4">Delete Category</h2>
+                        <p>Are you sure you want to delete <span className="font-semibold">{selectedCategory?.name}</span>?</p>
+                        <div className="mt-6 flex justify-end gap-2">
+                            <SecondaryButton type="button" onClick={() => setShowDeleteModal(false)}>Cancel</SecondaryButton>
+                            <DangerButton type="button" onClick={handleDelete}>Delete</DangerButton>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="p-6 text-center text-gray-400">Only admins can delete categories.</div>
+                )}
             </Modal>
         </div>
     );
