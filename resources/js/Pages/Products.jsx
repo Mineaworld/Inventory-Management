@@ -66,7 +66,7 @@ export default function Products({ suppliers = [] }) {
         setEditing(product);
         setForm({
             name: product.name,
-            description: product.description,
+            description: !product.description || product.description === 'null' ? '' : product.description,
             price: product.price,
             quantity: product.quantity,
             supplier_id: product.supplier_id || '',
@@ -131,7 +131,7 @@ export default function Products({ suppliers = [] }) {
         setEditing(product);
         setForm({
             name: product.name,
-            description: product.description,
+            description: !product.description || product.description === 'null' ? '' : product.description,
             price: product.price,
             quantity: product.quantity,
             supplier_id: product.supplier_id || '',
@@ -445,7 +445,6 @@ export default function Products({ suppliers = [] }) {
                                         value={form.category_id}
                                         onChange={handleChange}
                                         className="w-full px-3 py-2 rounded-lg border border-muted bg-background dark:bg-zinc-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                        required
                                     >
                                         <option value="">{t('select_category') || 'Select a category'}</option>
                                         {categories.map(cat => (
