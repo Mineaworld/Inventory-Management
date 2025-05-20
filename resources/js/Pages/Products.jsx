@@ -83,10 +83,10 @@ export default function Products({ suppliers = [] }) {
         if (!deleteTarget) return;
         try {
             await axios.delete(`/products/${deleteTarget}`);
-            toast(<div><b>Product Deleted</b><div>The product was deleted successfully.</div></div>);
+            toast(<div><b>{t('success')}</b><div>{t('product_deleted')}</div></div>);
             fetchProducts();
         } catch (err) {
-            toast(<div><b>Error</b><div>{err.response?.data?.error || 'Something went wrong.'}</div></div>);
+            toast(<div><b>{t('error')}</b><div>{err.response?.data?.error || t('failed_to_delete_product')}</div></div>);
         }
         setShowDeleteModal(false);
         setDeleteTarget(null);
@@ -166,12 +166,12 @@ export default function Products({ suppliers = [] }) {
                 await axios.post(`/products/${editing.id}`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
-                toast(<div><b>Product Updated</b><div>The product was updated successfully.</div></div>);
+                toast(<div><b>{t('success')}</b><div>{t('product_updated')}</div></div>);
             } else {
                 await axios.post('/products', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
-                toast(<div><b>Product Added</b><div>The product was added successfully.</div></div>);
+                toast(<div><b>{t('success')}</b><div>{t('product_added')}</div></div>);
             }
             // Refetch products and categories to ensure latest category names
             await fetchProducts();
@@ -179,7 +179,7 @@ export default function Products({ suppliers = [] }) {
             closeModal();
             setImageFile(null);
         } catch (err) {
-            toast(<div><b>Error</b><div>{err.response?.data?.error || 'Something went wrong.'}</div></div>);
+            toast(<div><b>{t('error')}</b><div>{err.response?.data?.error || t('failed_to_add_product')}</div></div>);
         }
     };
 
@@ -206,9 +206,9 @@ export default function Products({ suppliers = [] }) {
             setForm(f => ({ ...f, category_id: res.data.id }));
             setShowAddCategoryModal(false);
             setNewCategory({ name: '', description: '' });
-            toast(<div><b>Category Added</b><div>The category was added successfully.</div></div>);
+            toast(<div><b>{t('success')}</b><div>{t('category_added')}</div></div>);
         } catch (err) {
-            setAddCategoryError(err.response?.data?.errors?.name || 'Failed to add category');
+            setAddCategoryError(err.response?.data?.errors?.name || t('failed_to_add_category'));
         }
     };
 

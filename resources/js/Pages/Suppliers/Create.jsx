@@ -25,7 +25,7 @@ export default function Create() {
         post(route('suppliers.store'), {
             onError: (errors) => {
                 if (errors.name) {
-                    toast(<div><b>Error</b><div>{errors.name}</div></div>);
+                    toast(<div><b>{t('error')}</b><div>{errors.name}</div></div>);
                 }
             },
         });

@@ -10,6 +10,7 @@ import InputError from '@/Components/InputError';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useToast } from '@/hooks/use-toast';
 import { usePage } from '@inertiajs/react';
+import { useLanguage } from '@/Context/LanguageContext';
 
 export default function Category() {
     const [categories, setCategories] = useState([]);
@@ -24,6 +25,7 @@ export default function Category() {
     const [searchTerm, setSearchTerm] = useState('');
     const { toast } = useToast();
     const { auth } = usePage().props;
+    const { t } = useLanguage();
     const user = auth && auth.user;
     const isAdmin = user && user.role && user.role.name === 'Admin';
 
@@ -33,7 +35,7 @@ export default function Category() {
             const res = await axios.get('/api/categories');
             setCategories(res.data);
         } catch (err) {
-            setNotification({ type: 'error', message: 'Failed to load categories.' });
+            setNotification({ type: 'error', message: t('failed_to_load_categories') });
         }
         setLoading(false);
     };
@@ -70,18 +72,18 @@ export default function Category() {
         try {
             await axios.post('/api/categories', form);
             setShowAddModal(false);
-            setNotification({ type: 'success', message: 'Category added successfully.' });
+            setNotification({ type: 'success', message: t('category_added') });
             fetchCategories();
         } catch (err) {
             if (err.response && err.response.data && err.response.data.errors) {
                 setErrors(err.response.data.errors);
                 if (err.response.data.errors.name) {
-                    toast(<div><b>Error</b><div>{err.response.data.errors.name}</div></div>);
+                    toast(<div><b>{t('error')}</b><div>{err.response.data.errors.name}</div></div>);
                 } else {
-                    toast(<div><b>Error</b><div>Failed to add category.</div></div>);
+                    toast(<div><b>{t('error')}</b><div>{t('failed_to_add_category')}</div></div>);
                 }
             } else {
-                toast(<div><b>Error</b><div>Failed to add category.</div></div>);
+                toast(<div><b>{t('error')}</b><div>{t('failed_to_add_category')}</div></div>);
             }
         }
     };
@@ -92,18 +94,18 @@ export default function Category() {
         try {
             await axios.put(`/api/categories/${selectedCategory.id}`, form);
             setShowEditModal(false);
-            setNotification({ type: 'success', message: 'Category updated successfully.' });
+            setNotification({ type: 'success', message: t('category_updated') });
             fetchCategories();
         } catch (err) {
             if (err.response && err.response.data && err.response.data.errors) {
                 setErrors(err.response.data.errors);
                 if (err.response.data.errors.name) {
-                    toast(<div><b>Error</b><div>{err.response.data.errors.name}</div></div>);
+                    toast(<div><b>{t('error')}</b><div>{err.response.data.errors.name}</div></div>);
                 } else {
-                    toast(<div><b>Error</b><div>Failed to update category.</div></div>);
+                    toast(<div><b>{t('error')}</b><div>{t('failed_to_update_category')}</div></div>);
                 }
             } else {
-                toast(<div><b>Error</b><div>Failed to update category.</div></div>);
+                toast(<div><b>{t('error')}</b><div>{t('failed_to_update_category')}</div></div>);
             }
         }
     };
@@ -112,10 +114,10 @@ export default function Category() {
         try {
             await axios.delete(`/api/categories/${selectedCategory.id}`);
             setShowDeleteModal(false);
-            setNotification({ type: 'success', message: 'Category deleted successfully.' });
+            setNotification({ type: 'success', message: t('category_deleted') });
             fetchCategories();
         } catch (err) {
-            setNotification({ type: 'error', message: 'Failed to delete category.' });
+            setNotification({ type: 'error', message: t('failed_to_delete_category') });
         }
     };
 
@@ -128,17 +130,17 @@ export default function Category() {
     return (
         <div className="py-8">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Categories</h1>
+                <h1 className="text-2xl font-bold">{t('categories')}</h1>
                 {isAdmin ? (
-                    <PrimaryButton onClick={openAddModal}>Add Category</PrimaryButton>
+                    <PrimaryButton onClick={openAddModal}>{t('add_category')}</PrimaryButton>
                 ) : (
-                    <span className="text-sm text-gray-400">Only admins can add categories.</span>
+                    <span className="text-sm text-gray-400">{t('only_admins_can_add_categories')}</span>
                 )}
             </div>
             <div className="mb-4 flex items-center gap-2">
                 <input
                     type="text"
-                    placeholder="Search categories..."
+                    placeholder={t('search_categories')}
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                     className="px-3 py-2 rounded-lg border border-muted bg-background dark:bg-zinc-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 w-full max-w-xs"
@@ -149,20 +151,20 @@ export default function Category() {
             )}
             <div className="bg-white dark:bg-zinc-900 rounded shadow p-4">
                 {loading ? (
-                    <div>Loading...</div>
+                    <div>{t('loading')}</div>
                 ) : (
                     <table className="min-w-full table-auto">
                         <thead>
                             <tr className="bg-gray-100 dark:bg-zinc-800">
-                                <th className="px-4 py-2 text-left">Name</th>
-                                <th className="px-4 py-2 text-left">Description</th>
-                                <th className="px-4 py-2 text-right">Actions</th>
+                                <th className="px-4 py-2 text-left">{t('name')}</th>
+                                <th className="px-4 py-2 text-left">{t('description')}</th>
+                                <th className="px-4 py-2 text-right">{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredCategories.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3" className="text-center py-4 text-gray-500">No categories found.</td>
+                                    <td colSpan="3" className="text-center py-4 text-gray-500">{t('no_categories_found')}</td>
                                 </tr>
                             ) : (
                                 filteredCategories.map((cat) => (
@@ -171,17 +173,17 @@ export default function Category() {
                                         <td className="px-4 py-2">
                                             {cat.description && cat.description.trim() !== ''
                                                 ? cat.description
-                                                : <span className="italic text-gray-400">No description</span>
+                                                : <span className="italic text-gray-400">{t('no_description')}</span>
                                             }
                                         </td>
                                         <td className="px-4 py-2 text-right space-x-2">
                                             {isAdmin ? (
                                                 <>
-                                                    <SecondaryButton onClick={() => openEditModal(cat)}>Edit</SecondaryButton>
-                                                    <DangerButton onClick={() => openDeleteModal(cat)}>Delete</DangerButton>
+                                                    <SecondaryButton onClick={() => openEditModal(cat)}>{t('edit')}</SecondaryButton>
+                                                    <DangerButton onClick={() => openDeleteModal(cat)}>{t('delete')}</DangerButton>
                                                 </>
                                             ) : (
-                                                <span className="text-xs text-gray-400">No permission</span>
+                                                <span className="text-xs text-gray-400">{t('no_permission')}</span>
                                             )}
                                         </td>
                                     </tr>
@@ -195,55 +197,55 @@ export default function Category() {
             <Modal show={showAddModal} onClose={() => setShowAddModal(false)} maxWidth="xs">
                 {isAdmin ? (
                     <form onSubmit={handleAdd} className="p-4 text-sm w-full max-w-xs mx-auto rounded-xl shadow-lg bg-white dark:bg-zinc-900">
-                        <h2 className="text-base font-semibold mb-2">Add Category</h2>
-                        <InputLabel htmlFor="name" value="Name" />
+                        <h2 className="text-base font-semibold mb-2">{t('add_category')}</h2>
+                        <InputLabel htmlFor="name" value={t('name')} />
                         <TextInput id="name" name="name" value={form.name} onChange={handleInputChange} className="mt-1 block w-full" required autoFocus />
                         <InputError message={errors.name} className="mt-1" />
-                        <InputLabel htmlFor="description" value="Description" className="mt-4" />
+                        <InputLabel htmlFor="description" value={t('description')} className="mt-4" />
                         <TextInput id="description" name="description" value={form.description} onChange={handleInputChange} className="mt-1 block w-full" />
                         <InputError message={errors.description} className="mt-1" />
                         <div className="mt-6 flex justify-end gap-2">
-                            <SecondaryButton type="button" onClick={() => setShowAddModal(false)}>Cancel</SecondaryButton>
-                            <PrimaryButton type="submit">Add</PrimaryButton>
+                            <SecondaryButton type="button" onClick={() => setShowAddModal(false)}>{t('cancel')}</SecondaryButton>
+                            <PrimaryButton type="submit">{t('add')}</PrimaryButton>
                         </div>
                     </form>
                 ) : (
-                    <div className="p-4 text-center text-gray-400">Only admins can add categories.</div>
+                    <div className="p-4 text-center text-gray-400">{t('only_admins_can_add_categories')}</div>
                 )}
             </Modal>
             {/* Edit Modal */}
             <Modal show={showEditModal} onClose={() => setShowEditModal(false)} maxWidth="xs">
                 {isAdmin ? (
                     <form onSubmit={handleEdit} className="p-4 text-sm w-full max-w-xs mx-auto rounded-xl shadow-lg bg-white dark:bg-zinc-900">
-                        <h2 className="text-base font-semibold mb-2">Edit Category</h2>
-                        <InputLabel htmlFor="name" value="Name" />
+                        <h2 className="text-base font-semibold mb-2">{t('edit_category')}</h2>
+                        <InputLabel htmlFor="name" value={t('name')} />
                         <TextInput id="name" name="name" value={form.name} onChange={handleInputChange} className="mt-1 block w-full" required autoFocus />
                         <InputError message={errors.name} className="mt-1" />
-                        <InputLabel htmlFor="description" value="Description" className="mt-4" />
+                        <InputLabel htmlFor="description" value={t('description')} className="mt-4" />
                         <TextInput id="description" name="description" value={form.description} onChange={handleInputChange} className="mt-1 block w-full" />
                         <InputError message={errors.description} className="mt-1" />
                         <div className="mt-6 flex justify-end gap-2">
-                            <SecondaryButton type="button" onClick={() => setShowEditModal(false)}>Cancel</SecondaryButton>
-                            <PrimaryButton type="submit">Save</PrimaryButton>
+                            <SecondaryButton type="button" onClick={() => setShowEditModal(false)}>{t('cancel')}</SecondaryButton>
+                            <PrimaryButton type="submit">{t('save')}</PrimaryButton>
                         </div>
                     </form>
                 ) : (
-                    <div className="p-4 text-center text-gray-400">Only admins can edit categories.</div>
+                    <div className="p-4 text-center text-gray-400">{t('only_admins_can_edit_categories')}</div>
                 )}
             </Modal>
             {/* Delete Modal */}
             <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)} maxWidth="sm">
                 {isAdmin ? (
                     <div className="p-6">
-                        <h2 className="text-lg font-bold mb-4">Delete Category</h2>
-                        <p>Are you sure you want to delete <span className="font-semibold">{selectedCategory?.name}</span>?</p>
+                        <h2 className="text-lg font-bold mb-4">{t('delete_category')}</h2>
+                        <p>{t('are_you_sure_delete')} <span className="font-semibold">{selectedCategory?.name}</span>?</p>
                         <div className="mt-6 flex justify-end gap-2">
-                            <SecondaryButton type="button" onClick={() => setShowDeleteModal(false)}>Cancel</SecondaryButton>
-                            <DangerButton type="button" onClick={handleDelete}>Delete</DangerButton>
+                            <SecondaryButton type="button" onClick={() => setShowDeleteModal(false)}>{t('cancel')}</SecondaryButton>
+                            <DangerButton type="button" onClick={handleDelete}>{t('delete')}</DangerButton>
                         </div>
                     </div>
                 ) : (
-                    <div className="p-6 text-center text-gray-400">Only admins can delete categories.</div>
+                    <div className="p-6 text-center text-gray-400">{t('only_admins_can_delete_categories')}</div>
                 )}
             </Modal>
         </div>

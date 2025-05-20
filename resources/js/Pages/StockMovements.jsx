@@ -59,9 +59,9 @@ export default function StockMovements() {
             setForm({ product_id: '', type: 'purchase', quantity: '', note: '' });
             fetchMovements();
             closeModal();
-            toast(<div><b>Stock Movement Added</b><div>The stock movement was added successfully.</div></div>);
+            toast(<div><b>{t('success')}</b><div>{t('stock_movement_added')}</div></div>);
         } catch (err) {
-            toast(<div><b>Error</b><div>{err.response?.data?.message || 'Unknown error'}</div></div>);
+            toast(<div><b>{t('error')}</b><div>{err.response?.data?.message || t('unknown_error')}</div></div>);
         }
         setLoading(false);
     };
