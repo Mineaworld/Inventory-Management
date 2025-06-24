@@ -101,13 +101,6 @@ export default function Login({ status, canResetPassword }) {
                             Forgot your password?
                         </Link>
                     )}
-
-                    <Link
-                        href={route('register')}
-                        className="text-sm text-blue-600 hover:text-blue-800 focus:outline-none"
-                    >
-                        Need an account? Register
-                    </Link>
                 </div>
             </form>
         </GuestLayout>

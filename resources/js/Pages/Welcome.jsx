@@ -24,20 +24,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     Dashboard
                                 </Link>
                             ) : (
-                                <>
-                                    <Link
-                                        href={route('login')}
-                                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                    >
-                                        Log in
-                                    </Link>
-                                    <Link
-                                        href={route('register')}
-                                        className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                    >
-                                        Register
-                                    </Link>
-                                </>
+                                <Link
+                                    href={route('login')}
+                                    className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                >
+                                    Log in
+                                </Link>
                             )}
                         </nav>
                     </div>
@@ -63,20 +55,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         Go to Dashboard
                                     </Link>
                                 ) : (
-                                    <>
-                                        <Link
-                                            href={route('register')}
-                                            className="rounded-md bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                        >
-                                            Get Started
-                                        </Link>
-                                        <Link
-                                            href={route('login')}
-                                            className="rounded-md border border-blue-300 bg-white px-6 py-3 text-base font-medium text-blue-600 shadow-sm transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                        >
-                                            Sign In
-                                        </Link>
-                                    </>
+                                    <Link
+                                        href={route('login')}
+                                        className="rounded-md border border-blue-300 bg-white px-6 py-3 text-base font-medium text-blue-600 shadow-sm transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                    >
+                                        Sign In
+                                    </Link>
                                 )}
                             </div>
                         </div>
